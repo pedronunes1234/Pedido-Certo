@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Pedido Certo</title>
+  <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+  <header>
+  <img src="imagens/logobran.png" alt="Pedido Certo">
+  
+  </header>
+     
+
+ <div class="endereco-wrapper">
+  <div class="endereco-card">
+
+    <div class="endereco-texto">
+      <span class="titulo">Entregar em</span>
+      <span class="endereco" id="textoEndereco">Informe seu endereço</span>
+    </div>
+
+    <!-- BOTÃO -->
+    <button class="btn-endereco" id="btnEndereco">
+      Adicionar endereço
+      <span class="seta">➜</span>
+    </button>
+
+    <!-- INPUT (começa escondido) -->
+    <input 
+      type="text"
+      class="input-endereco"
+      id="inputEndereco"
+      placeholder="Digite seu endereço completo"
+    >
+    <button class="btn-salvar" id="btnSalvarEndereco">
+  Salvar endereço
+</button>
+
+
+  </div>
+</div>
+
+<section class="lojas-section">
+  <h2 class="titulo-section">Lojas parceiras</h2>
+
+ <div class="lojas-lista">
+
+  <!-- Burger House -->
+  <div class="loja-card"
+       data-loja="burger-house"
+       data-abre="16:00"
+       data-fecha="22:35">
+
+    <img src="imagens/burger.png" class="logo-loja" alt="Burger House">
+
+    <div class="info-loja">
+      <span class="nome-loja">Burger House</span>
+      <span class="status-loja"></span>
+    </div>
+
+    <span class="seta-loja">➜</span>
+  </div>
+
+
+  <!-- Peixodá Pizzaria -->
+  <div class="loja-card"
+       data-loja="peixoda-pizzaria"
+       data-abre="18:00"
+       data-fecha="23:30">
+
+    <img src="imagens/pizza.png" class="logo-loja" alt="Peixodá Pizzaria">
+
+    <div class="info-loja">
+      <span class="nome-loja">Peixodá Pizzaria</span>
+      <span class="status-loja"></span>
+    </div>
+
+    <span class="seta-loja">➜</span>
+  </div>
+
+</div>
+
+
+</section>
+
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
