@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pizzaria | Pedido Certo</title>
+
+  <!-- CSS GLOBAL -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="shortcut icon" href="imagens/logo.pizzaria.png" type="image/x-icon">
+</head>
+
+<!-- IMPORTANTE: identifica qual loja é -->
+<body data-loja="pizzaria">
+ 
+  <!-- HEADER DA LOJA -->
+  <header class="header-loja">
+    <div class="topo-loja">
+        <button class="btn-voltar" onclick="history.back()"> ← </button>
+      <img src="imagens/logo.pizzaria.png" alt="Logo da Pizzaria" class="logo-loja">
+      <div class="info-topo">
+        <h2 class="nome-loja">Pizzaria</h2>
+        <span class="status-text"></span>
+      </div>
+    </div>
+
+     <!-- ENDEREÇO -->
+  <div class="endereco-loja">
+    📍 Entregar em: <span id="endereco-usuario">Informe seu endereço</span>
+  </div>
+
+  </header>
+
+  <!-- CATEGORIAS -->
+  <section class="categorias">
+    <button class="categoria ativa">comidas</button>
+    <button class="categoria">bebidas</button>
+  </section>
+
+  <!-- LISTA DE PRODUTOS -->
+  <main class="produtos">
+    <div id="lista-produtos">
+      <!-- Produtos renderizados via JS -->
+    </div>
+  </main>
+
+  <!-- CARRINHO FIXO -->
+  <div class="carrinho-bar">
+    <button class="btn-carrinho" onclick="abrirCarrinho()">
+       Ver Carrinho • <span id="total-carrinho">R$ 0.00</span>
+    </button>
+  </div>
+
+  <!-- JS -->
+  <script src="js/lojas.js"></script>
+  <script src="js/script.js"></script>
+
+</body>
+</html>

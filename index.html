@@ -3,92 +3,79 @@
 <head>
   <meta charset="UTF-8">
   <title>Pedido Certo</title>
-  <link rel="stylesheet" href="style.css">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="shortcut icon" href="imagens/logover.png" type="">
 </head>
+
+
 <body>
 
-  <header>
-  <img src="imagens/logobran.png" alt="Pedido Certo">
-  
+  <!-- HEADER -->
+  <header class="header">
+    <img src="imagens/Sem nome (500 x 200 px).png" alt="Pedido Certo" class="logo">
   </header>
-     
 
- <div class="endereco-wrapper">
-  <div class="endereco-card">
+  <!-- ENDEREÇO -->
+  <section class="endereco-wrapper">
+    <div class="endereco-card">
 
-    <div class="endereco-texto">
-      <span class="titulo">Entregar em</span>
-      <span class="endereco" id="textoEndereco">Informe seu endereço</span>
+      <div class="endereco-texto">
+        <span class="titulo">Entregar em</span>
+        <span class="endereco" id="textoEndereco">Informe seu endereço</span>
+      </div>
+
+      <button class="btn-endereco" id="btnEndereco">
+        Adicionar endereço <span class="seta">➜</span>
+      </button>
+
+      <input
+        type="text"
+        id="inputEndereco"
+        class="input-endereco"
+        placeholder="Digite seu endereço completo"
+      >
+
+      <button class="btn-salvar" id="btnSalvarEndereco">
+        Salvar endereço
+      </button>
+
     </div>
+  </section>
 
-    <!-- BOTÃO -->
-    <button class="btn-endereco" id="btnEndereco">
-      Adicionar endereço
-      <span class="seta">➜</span>
-    </button>
+  <!-- LOJAS -->
+  <section class="lojas-section">
+    <h2 class="titulo-section">Lojas parceiras</h2>
 
-    <!-- INPUT (começa escondido) -->
-    <input 
-      type="text"
-      class="input-endereco"
-      id="inputEndereco"
-      placeholder="Digite seu endereço completo"
-    >
-    <button class="btn-salvar" id="btnSalvarEndereco">
-  Salvar endereço
-</button>
+    <div class="lojas-lista">
 
+      <!-- BURGER -->
+      <div class="loja-card" data-abre="16:00" data-fecha="22:35">
+        <img src="imagens/logo.bur.png" class="logo-loja">
 
-  </div>
-</div>
+        <div class="info-loja">
+          <span class="nome-loja">Burger House</span>
+          <span class="status-loja"></span>
+        </div>
 
-<section class="lojas-section">
-  <h2 class="titulo-section">Lojas parceiras</h2>
+        <span class="seta-loja">➜</span>
+      </div>
 
- <div class="lojas-lista">
+      <!-- PIZZARIA -->
+      <div class="loja-card" data-abre="18:00" data-fecha="23:30" onclick="window.location.href='pizzaria.html'">
+        <img src="imagens/logo.pizzaria.png" class="logo-loja">
 
-  <!-- Burger House -->
-  <div class="loja-card"
-       data-loja="burger-house"
-       data-abre="16:00"
-       data-fecha="22:35">
+        <div class="info-loja">
+          <span class="nome-loja">Peixodá Pizzaria</span>
+          <span class="status-loja"></span>
+        </div>
 
-    <img src="imagens/burger.png" class="logo-loja" alt="Burger House">
+        <span class="seta-loja">➜</span>
+      </div>
 
-    <div class="info-loja">
-      <span class="nome-loja">Burger House</span>
-      <span class="status-loja"></span>
     </div>
-
-    <span class="seta-loja">➜</span>
-  </div>
-
-
-  <!-- Peixodá Pizzaria -->
-  <div class="loja-card"
-       data-loja="peixoda-pizzaria"
-       data-abre="18:00"
-       data-fecha="23:30">
-
-    <img src="imagens/pizza.png" class="logo-loja" alt="Peixodá Pizzaria">
-
-    <div class="info-loja">
-      <span class="nome-loja">Peixodá Pizzaria</span>
-      <span class="status-loja"></span>
-    </div>
-
-    <span class="seta-loja">➜</span>
-  </div>
-
-</div>
-
-
-</section>
-
-
-
-<script src="script.js"></script>
-
+  </section>
+   <script src="js/lojas.js"></script>
+  <script src="js/script.js"></script>
 </body>
 </html>

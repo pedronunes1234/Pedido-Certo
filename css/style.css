@@ -1,0 +1,490 @@
+/* =====================================================
+   RESET GERAL
+===================================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+html, body {
+  background: #f5f5f5;
+  overflow-x: hidden;
+  padding-bottom: 120px; /* espaço para botão fixo */
+}
+
+
+/* =====================================================
+   HEADER - PÁGINA PRINCIPAL
+===================================================== */
+
+.header {
+  background: #ff0000;
+  padding: 24px 0;
+  text-align: center;
+}
+
+.logo {
+  height: 70px;
+}
+
+
+/* =====================================================
+   ENDEREÇO - INDEX
+===================================================== */
+
+.endereco-wrapper {
+  padding: 15px;
+}
+
+.endereco-card {
+  background: #fff;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.titulo {
+  color: #777;
+  font-size: 14px;
+}
+
+.endereco {
+  display: block;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.btn-endereco {
+  margin-top: 12px;
+  width: 100%;
+  background: #ff0000;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.input-endereco {
+  margin-top: 10px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  display: none;
+}
+
+.btn-salvar {
+  margin-top: 10px;
+  width: 100%;
+  background: #28a745;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  display: none;
+}
+
+
+/* =====================================================
+   LISTA DE LOJAS - INDEX
+===================================================== */
+
+.lojas-section {
+  padding: 15px;
+}
+
+.titulo-section {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.lojas-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.loja-card {
+  background: #fff;
+  padding: 12px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.logo-loja {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+}
+
+.info-loja {
+  flex: 1;
+  margin-left: 12px;
+}
+
+.nome-loja {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.status-loja {
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.status-aberto {
+  color: #28a745;
+}
+
+.status-fechado {
+  color: #ff0505;
+}
+
+.seta-loja {
+  font-size: 20px;
+  color: #aaa;
+}
+
+
+/* =====================================================
+   PÁGINA DA LOJA
+===================================================== */
+
+.header-loja {
+  background: red;
+  padding: 20px;
+  color: #fff;
+}
+
+.topo-loja {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+} 
+
+
+.btn-voltar {
+
+  background: transparent;
+  
+  border: none;
+  font-size: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #fff;
+  transition: 0.3s ease;
+}
+
+.btn-voltar:hover {
+  opacity: 0.7;
+  transform: translateX(-3px);
+}
+
+
+.header-loja .logo-loja {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 14px;
+  background: #fff;
+  padding: 6px;
+}
+
+.info-topo {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-loja .nome-loja {
+  font-size: 22px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.status-text {
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+
+/* ENDEREÇO NA LOJA */
+
+.endereco-loja {
+  margin-top: 15px;
+  font-size: 14px;
+  background: rgba(255,255,255,0.2);
+  padding: 10px;
+  border-radius: 8px;
+}
+
+
+/* =====================================================
+   CATEGORIAS
+===================================================== */
+
+.categorias {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 15px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  overflow-x: auto;
+}
+
+.categoria {
+  position: relative;
+  padding: 8px 10px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  color: #555;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+}
+
+/* Linha animada */
+.categoria::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  width: 0;
+  height: 3px;
+  background: #c40000;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.categoria.ativa {
+  color: #c40000;
+  font-weight: 600;
+}
+
+.categoria.ativa::after {
+  width: 100%;
+}
+
+
+/* =====================================================
+   PRODUTOS
+===================================================== */
+
+.produtos {
+  padding: 15px;
+}
+
+.produto-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 12px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  margin-bottom: 14px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.produto-info {
+  flex: 1;
+}
+
+.produto-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 14px;
+  background: #f1f1f1;
+}
+
+
+
+.produto-info h3 {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.produto-info p {
+  font-size: 15px;
+  font-weight: bold;
+  color: #c40000;
+  margin-top: 4px;
+}
+
+
+/* =====================================================
+   CONTROLE DE QUANTIDADE (SEM FUNDO)
+===================================================== */
+
+.controle-qtd {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn-qtd {
+  background: none;
+  border: none;
+  font-size: 24px;
+  font-weight: bold;
+  color: #c40000;
+  cursor: pointer;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s ease;
+}
+
+.btn-qtd:active {
+  transform: scale(0.85);
+}
+
+.qtd-numero {
+  min-width: 22px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+
+/* =====================================================
+   BOTÃO FIXO DO CARRINHO
+===================================================== */
+
+.btn-carrinho {
+  position: fixed;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 30px);
+  max-width: 480px;
+  background: #c40000;
+  color: #fff;
+  border: none;
+  padding: 14px;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 99999;
+}
+
+
+
+.linha-preco-tamanho {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tamanhos {
+  display: flex;
+  gap: 6px;
+  margin-top:6px;
+}
+
+.btn-tamanho {
+  border: 1px solid #c40000;
+  background: transparent;
+  color: #c40000;
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-tamanho:hover {
+  transform: scale(1.1);
+}
+
+.btn-tamanho.ativo {
+  background: #c40000;
+  color: #fff;
+}
+
+.preco-produto {
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.troca-preco {
+  opacity: 0.4;
+  transform: scale(1.05);
+}
+
+
+
+.marcas {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+
+.btn-marca {
+  padding: 4px 10px;
+  border-radius: 15px;
+  border: 1px solid #c40000;
+  background: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.btn-marca:hover {
+  background: #ffe5e5;
+}
+
+.btn-marca.ativo {
+  background: #c40000;
+  color: #fff;
+  transform: scale(1.05);
+}
+
+
+.produto-img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  transition: all 0.2s ease;
+}
+
+/* =====================================================
+   RESPONSIVO
+===================================================== */
+
+@media (max-width: 480px) {
+
+  .header-loja .logo-loja {
+    width: 65px;
+    height: 65px;
+  }
+
+  .header-loja .nome-loja {
+    font-size: 19px;
+  }
+
+  .produto-img {
+    width: 70px;
+    height: 70px;
+  }
+
+}
