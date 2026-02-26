@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (textoEndereco) {
     const enderecoSalvo = localStorage.getItem("enderecoUsuario");
-
+ 
     if (enderecoSalvo) {
       textoEndereco.textContent = enderecoSalvo;
     }
@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   verificarHorario();
 
-  let carrinho = {};
+  window.carrinho = {};
   const totalEl = document.getElementById("total-carrinho");
   const lista = document.getElementById("lista-produtos");
 
@@ -287,3 +287,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 });
+  
+
+function abrirCarrinho() {
+  localStorage.setItem("carrinho", JSON.stringify(window.carrinho));
+  window.location.href = "carrinho.html";
+}

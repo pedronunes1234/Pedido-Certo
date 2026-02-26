@@ -104,3 +104,11 @@ const LOJAS = {
   }
 
 };
+
+const enderecoSalvo = localStorage.getItem("enderecoUsuario");
+const enderecoLoja = document.getElementById("endereco-usuario");
+
+if (enderecoLoja && enderecoSalvo) {
+  enderecoLoja.textContent = enderecoSalvo;
+}
+

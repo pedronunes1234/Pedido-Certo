@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Carrinho</title>
+  <link rel="stylesheet" href="carrinho.css">
+</head>
+<body>
+
+<div class="carrinho-container">
+
+  <!-- TOPO -->
+  <div class="topo-carrinho">
+    <button onclick="history.back()" class="btn-voltar">←</button>
+    <h2>Carrinho</h2>
+  </div>
+
+  <!-- ENDEREÇO -->
+  <div class="endereco-box">
+    📍 Entregar em:
+    <span id="enderecoCarrinho">Carregando...</span>
+  </div>
+
+  <!-- LISTA DE ITENS -->
+  <div id="listaCarrinho" class="lista-carrinho">
+    <!-- Itens vão aparecer aqui pelo JS -->
+  </div>
+
+  <!-- RESUMO -->
+  <div class="resumo">
+    <div class="linha">
+      <span>Subtotal</span>
+      <span id="subtotal">R$ 0,00</span>
+    </div>
+
+    
+
+    <div class="linha-total">
+      <span>Total</span>
+      <span id="total">R$ 0,00</span>
+    </div>
+  </div>
+
+  <div class="campo-cliente">
+  <label>Nome:</label>
+  <input type="text" id="nomeCliente" placeholder="Digite seu nome">
+</div>
+
+
+  <!-- PAGAMENTO -->
+  <div class="pagamento">
+    <h3>Forma de pagamento</h3>
+
+    <label class="opcao">
+      <input type="radio" name="pagamento" value="Cartão">
+      Cartão na entrega
+    </label>
+
+    <label class="opcao">
+      <input type="radio" name="pagamento" value="Pix">
+      Pix
+    </label>
+
+    <label class="opcao">
+      <input type="radio" name="pagamento" value="Dinheiro" id="radioDinheiro">
+      Dinheiro
+    </label>
+
+    <!-- TROCO -->
+    <div id="trocoBox" class="troco-box">
+      <p>Precisa de troco?</p>
+
+      <label>
+        <input type="radio" name="troco" value="Não" checked>
+        Não
+      </label>
+
+      <label>
+        <input type="radio" name="troco" value="Sim" id="trocoSim">
+        Sim
+      </label>
+
+      <div id="valorTrocoBox" class="valor-troco">
+        Troco para: R$
+        <input type="number" id="valorTrocoInput" placeholder="Ex: 100">
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTÃO FINALIZAR -->
+  <button id="btnFinalizar" class="btn-finalizar">
+    Finalizar Pedido (WhatsApp)
+  </button>
+
+</div>
+
+<script src="carrinho.js"></script>
+</body>
+</html>
+ 
