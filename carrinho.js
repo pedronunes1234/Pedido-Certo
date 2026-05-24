@@ -141,10 +141,10 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    let mensagem = `🍕 *Novo Pedido*\n\n`;
-    mensagem += `👤 Nome: ${nome}\n`;
-    mensagem += `📍 Endereço: ${endereco}\n\n`;
-    mensagem += `🛒 *Pedido:*\n`;
+    let mensagem = `*Novo Pedido*\n\n`;
+    mensagem += `Nome: ${nome}\n`;
+    mensagem += ` Endereço: ${endereco}\n\n`;
+    mensagem += ` *Pedido:*\n`;
 
     let total = 0;
 
@@ -159,13 +159,13 @@ document.addEventListener("DOMContentLoaded", () => {
       mensagem += `\n${item.qtd}x R$ ${item.preco.toFixed(2)} = R$ ${totalItem.toFixed(2)}\n\n`;
     });
 
-    mensagem += `💰 Total: R$ ${total.toFixed(2)}\n`;
-    mensagem += `💳 Pagamento: ${pagamentoSelecionado.value}\n`;
+    mensagem += ` Total: R$ ${total.toFixed(2)}\n`;
+    mensagem += ` Pagamento: ${pagamentoSelecionado.value}\n`;
 
     // PIX
     if (pagamentoSelecionado.value === "Pix") {
-      mensagem += `\n🔑 Chave Pix: 84981635642\n`;
-      mensagem += `👤 Nome: Pedro Gustavo\n`;
+      mensagem += `\n Chave Pix: 84981635642\n`;
+      mensagem += ` Nome: Pedro Gustavo\n`;
     }
 
     // DINHEIRO
@@ -180,7 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
-        mensagem += `💵 Troco para: R$ ${parseFloat(valorTroco).toFixed(2)}\n`;
+        mensagem += ` Troco para: R$ ${parseFloat(valorTroco).toFixed(2)}\n`;
       }
     }
 
