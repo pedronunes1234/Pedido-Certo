@@ -96,13 +96,61 @@ const LOJAS = {
         {
           nome: "Água Mineral",
           preco: 4.00,
-          img: "imagens/agua.png"
+          img: "imagens/"
         }
       ]
 
     }
-  }
+  },
 
+
+  hamburgueria: {
+  nome: "Burger House",
+
+  abre: "16:00",
+  fecha: "22:35",
+
+  categorias: {
+    comidas: [
+      {
+        nome: "X-Burger",
+        preco: 15,
+        img: ""
+      },
+
+      {
+        nome: "X-Bacon",
+        preco: 18,
+        img: ""
+      },
+
+      {
+        nome: "X-Tudo",
+        preco: 25,
+        img: ""
+      }
+    ],
+
+    bebidas: [
+      {
+        nome: "Refrigerante Lata",
+        marcas: {
+          Coca: {
+            preco: 5,
+            img: "imagens/coca-lata.png"
+          },
+
+          Pepsi: {
+            preco: 5,
+            img: "imagens/pepsi-lata.png"
+          }
+        
+        }
+        
+      }
+    ]
+  }
+}
 };
 
 const enderecoSalvo = localStorage.getItem("enderecoUsuario");
@@ -111,4 +159,5 @@ const enderecoLoja = document.getElementById("endereco-usuario");
 if (enderecoLoja && enderecoSalvo) {
   enderecoLoja.textContent = enderecoSalvo;
 }
+
 
