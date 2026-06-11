@@ -11,7 +11,7 @@ const LOJAS = {
       comidas: [
         {
           nome: "Pizza Calabresa",
-          img: "imagens/pizza.calabr.png",
+          img: "imagens/pizzaria/pizza.calabr.png",
           tamanhos: {
             P: 30,
             M: 40,
@@ -20,7 +20,7 @@ const LOJAS = {
         },
         {
           nome: "Pizza Mussarela",
-          img: "imagens/pizza.mussa.png",
+          img: "imagens/pizzaria/pizza.mussa.png",
           tamanhos: {
             P: 30,
             M: 40,
@@ -29,7 +29,7 @@ const LOJAS = {
         },
         {
           nome: "Pizza Frango com Catupiry",
-          img: "imagens/pizza.fra.cap.png",
+          img: "imagens/pizzaria/pizza.fra.cap.png",
           tamanhos: {
             P: 30,
             M: 40,
@@ -44,15 +44,15 @@ const LOJAS = {
           marcas: {
             Coca: {
               preco: 9,
-              img: "imagens/coca.1L.png"
+              img: "imagens/bebidas/coca.1L.png"
             },
             Pepsi: {
               preco: 9,
-              img: "imagens/pespi.1L.png"
+              img: "imagens/bebidas/pespi.1L.png"
             },
             Guarana: {
               preco: 9,
-              img: "imagens/guara.1L.png"
+              img: "imagens/bebidas/guara.1L.png"
             }
           }
         },
@@ -62,15 +62,15 @@ const LOJAS = {
           marcas: {
             Coca: {
               preco: 15,
-              img: "imagens/coca.2L.png"
+              img: "imagens/bebidas/coca.2L.png"
             },
             Pepsi: {
               preco: 15,
-              img: "imagens/pespi.2L.png"
+              img: "imagens/bebidas/pespi.2L.png"
             },
             Guarana: {
               preco: 15,
-              img: "imagens/guara.2L.png"
+              img: "imagens/bebidas/guara.2L.png"
             }
           }
         },
@@ -80,15 +80,15 @@ const LOJAS = {
           marcas: {
             Coca: {
               preco: 5,
-              img: "imagens/coca.lata.png"
+              img: "imagens/bebidas/coca.lata.png"
             },
             Pepsi: {
               preco: 5,
-              img: "imagens/pespi.lata.png"
+              img: "imagens/bebidas/pespi.lata.png"
             },
             Guarana: {
               preco: 5,
-              img: "imagens/guara.lata.png"
+              img: "imagens/bebidas/guara.lata.png"
             }
           }
         },
@@ -96,7 +96,7 @@ const LOJAS = {
         {
           nome: "Água Mineral",
           preco: 4.00,
-          img: "imagens/"
+          img: "imagens/bebidas/agua.png"
         }
       ]
 
@@ -113,21 +113,21 @@ const LOJAS = {
   categorias: {
     comidas: [
       {
-        nome: "X-Burger",
+        nome: "X-Burguer",
         preco: 15,
-        img: ""
+        img: "imagens/hamburgueria/x-burger.png"
       },
 
       {
         nome: "X-Bacon",
         preco: 18,
-        img: ""
+        img: "imagens/hamburgueria/x-bancon.jpg"
       },
 
       {
         nome: "X-Tudo",
         preco: 25,
-        img: ""
+        img: "imagens/hamburgueria/x-tudo.png"
       }
     ],
 
@@ -137,19 +137,67 @@ const LOJAS = {
         marcas: {
           Coca: {
             preco: 5,
-            img: "imagens/coca-lata.png"
+            img: "imagens/bebidas/coca.lata.png"
           },
 
           Pepsi: {
             preco: 5,
-            img: "imagens/pepsi-lata.png"
-          }
-        
+            img: "imagens/bebidas/pespi.lata.png"
+          },
+
+           Guarana: {
+              preco: 5,
+              img: "imagens/bebidas/guara.lata.png"
+           }
+
         }
         
-      }
+      },
+
+       {
+          nome: "Refrigerante 1L",
+          marcas: {
+            Coca: {
+              preco: 9,
+              img: "imagens/bebidas/coca.1L.png"
+            },
+            Pepsi: {
+              preco: 9,
+              img: "imagens/bebidas/pespi.1L.png"
+            },
+            Guarana: {
+              preco: 9,
+              img: "imagens/bebidas/guara.1L.png"
+            }
+          }
+        },
+
+        {
+          nome: "Refrigerante 2 Litro",
+          marcas: {
+            Coca: {
+              preco: 15,
+              img: "imagens/bebidas/coca.2L.png"
+            },
+            Pepsi: {
+              preco: 15,
+              img: "imagens/bebidas/pespi.2L.png"
+            },
+            Guarana: {
+              preco: 15,
+              img: "imagens/bebidas/guara.2L.png"
+            }
+          }
+        },
+        
+        {
+          nome: "Água Mineral",
+          preco: 4.00,
+          img: "imagens/bebidas/agua.png"
+        }
     ]
   }
+
 }
 };
 
