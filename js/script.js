@@ -88,6 +88,12 @@ const listaAdicionais = document.getElementById("listaAdicionais");
 const fecharModal = document.getElementById("fecharModal");
 const btnAdicionarCarrinho =document.getElementById("btnAdicionarCarrinho");
 
+if (fecharModal) {
+  fecharModal.addEventListener("click", () => {
+    modal.style.display = "none";
+  });
+}
+
 let produtoAtual = null;
 let adicionaisSelecionados = [];
 let totalModal = 0;
@@ -243,127 +249,140 @@ console.log("ABRIU MODAL");
 
   function criarMonteSuaPizza(produto) {
 
-    saboresSelecionados = [];
+    const listaSabores = document.getElementById("listaAdicionais");
+    const contador = document.getElementById("contadorSabores");
 
-    tamanhoPizzaPersonalizada = "P";
+    listaSabores.innerHTML = "";
 
+    modal.querySelectorAll(".btn-tamanho").forEach(b => b.classList.remove("ativo"));
+    modal.querySelector('.btn-tamanho[data-size="P"]').classList.add("ativo");
+
+    let tamanho = "P";
+    let saboresSelecionados = [];
+
+    const limiteSabores = {
+        P: 2,
+        M: 2,
+        G: 3
+    };
+
+    let basePrice = produto.tamanhos[tamanho];
+    let total = basePrice;
+
+    modalPrecoBase.textContent = "Preço Base: R$ " + basePrice.toFixed(2);
+    modalTotal.textContent = "R$ " + basePrice.toFixed(2);
+
+    contador.textContent = `Selecionados: 0/${limiteSabores[tamanho]}`;
+
+    // ===============================
+    // 🔥 BOTÕES P / M / G (SEM DUPLICAR EVENTO)
+    // ===============================
+    const botoesTamanho = modal.querySelectorAll(".btn-tamanho");
 
     botoesTamanho.forEach(btn => {
 
-        btn.addEventListener(
-            "click",
-            () => {
-
-                botoesTamanho.forEach(
-                    b => b.classList.remove("ativo")
-                );
-
-                btn.classList.add("ativo");
-
-                tamanhoPizzaPersonalizada =
-                    btn.dataset.tamanho;
-
-                totalModal =
-                    produto.tamanhos[
-                        tamanhoPizzaPersonalizada
-                    ];
-
-                modalPrecoBase.textContent =
-                    "Preço Base: R$ " +
-                    totalModal.toFixed(2);
-
-                modalTotal.textContent =
-                    "R$ " +
-                    totalModal.toFixed(2);
-
-                document.getElementById(
-                    "contadorSabores"
-                ).textContent =
-
-                `Selecionados:
-                ${saboresSelecionados.length}/${
-                    limiteSabores[
-                        tamanhoPizzaPersonalizada
-                    ]
-                }`;
-            }
-        );
+        // remove listener antigo (IMPORTANTE para não duplicar)
+        btn.replaceWith(btn.cloneNode(true));
     });
 
+    modal.querySelectorAll(".btn-tamanho").forEach(btn => {
+
+        btn.addEventListener("click", () => {
+
+            modal.querySelectorAll(".btn-tamanho")
+                .forEach(b => b.classList.remove("ativo"));
+
+            btn.classList.add("ativo");
+
+            tamanho = btn.dataset.size;
+
+            saboresSelecionados = [];
+
+            listaSabores.querySelectorAll("input")
+                .forEach(i => i.checked = false);
+
+            basePrice = produto.tamanhos[tamanho];
+            total = basePrice;
+
+            modalPrecoBase.textContent =
+                "Preço Base: R$ " + basePrice.toFixed(2);
+
+            modalTotal.textContent =
+                "R$ " + total.toFixed(2);
+
+            contador.textContent =
+                `Selecionados: 0/${limiteSabores[tamanho]}`;
+        });
+    });
+
+    // ===============================
+    // 🔥 SABORES
+    // ===============================
     produto.sabores.forEach(sabor => {
 
-        const item =
-        document.createElement("div");
-
-        item.className =
-        "item-sabor-pizza";
+        const item = document.createElement("div");
+        item.className = "item-sabor-pizza";
 
         item.innerHTML = `
-
             <label>
-
-                <input
-                    type="checkbox"
-                    value="${sabor}"
-                >
-
+                <input type="checkbox">
                 ${sabor}
-
             </label>
-
         `;
 
-        listaAdicionais.appendChild(item);
+        const checkbox = item.querySelector("input");
 
-        const checkbox =
-        item.querySelector("input");
+        checkbox.addEventListener("change", () => {
 
-        checkbox.addEventListener(
-            "change",
-            () => {
+            const limite = limiteSabores[tamanho];
 
-                const limite =
-                limiteSabores[
-                    tamanhoPizzaPersonalizada
-                ];
+            if (checkbox.checked) {
 
-                if (checkbox.checked) {
-
-                    if (
-                        saboresSelecionados.length
-                        >= limite
-                    ) {
-
-                        checkbox.checked = false;
-
-                        alert(
-                            `Máximo de ${limite} sabores`
-                        );
-
-                        return;
-                    }
-
-                    saboresSelecionados.push(
-                        sabor
-                    );
-
-                } else {
-
-                    saboresSelecionados =
-                    saboresSelecionados.filter(
-                        s => s !== sabor
-                    );
+                if (saboresSelecionados.length >= limite) {
+                    checkbox.checked = false;
+                    alert(`Máximo de ${limite} sabores para tamanho ${tamanho}`);
+                    return;
                 }
 
-                document.getElementById(
-                    "contadorSabores"
-                ).textContent =
-
-                `Selecionados:
-                ${saboresSelecionados.length}/${limite}`;
+                saboresSelecionados.push(sabor);
+            } else {
+                saboresSelecionados =
+                    saboresSelecionados.filter(s => s !== sabor);
             }
-        );
+
+            contador.textContent =
+                `Selecionados: ${saboresSelecionados.length}/${limite}`;
+        });
+
+        listaSabores.appendChild(item);
     });
+
+    // ===============================
+    // 🔥 BOTÃO FINAL (INTEGRADO AO SEU CARRINHO)
+    // ===============================
+    btnAdicionarCarrinho.onclick = () => {
+
+        if (saboresSelecionados.length === 0) {
+            alert("Escolha pelo menos 1 sabor");
+            return;
+        }
+
+        const id = gerarId(produto, tamanho, "pizza");
+
+        if (!carrinho[id]) {
+            carrinho[id] = {
+                nome: `${produto.nome} (${tamanho})`,
+                preco: basePrice,
+                qtd: 0
+            };
+        }
+
+        carrinho[id].qtd++;
+
+        atualizarTotal();
+
+        modal.style.display = "none";
+    };
 }
 
   function renderizarCategoria(categoria) {
@@ -377,9 +396,15 @@ console.log("ABRIU MODAL");
       const card = document.createElement("div");
       card.classList.add("produto-card");
 
-      const baseId = produto.nome.replace(/\s/g, "");
+      const baseId = produto.nome.replace(/\s/g, "").replace(/[^a-zA-Z0-9\-_]/g, "");
 
       let tamanhoSelecionado = produto.tamanhos ? "M" : null;
+
+      // Monte sua Pizza: trata como produto simples no card, tamanho M fixo
+      if (produto.tipo === "monte-pizza") {
+        tamanhoSelecionado = "M";
+      }
+
       let marcaSelecionada = produto.marcas
         ? Object.keys(produto.marcas)[0]
         : null;
@@ -558,11 +583,8 @@ card.querySelector(`#mais-${baseId}`).addEventListener("click", (e) => {
 
   e.stopPropagation();
 
-  // Se o produto possui adicionais
-  if (
-    produto.adicionais ||
-    produto.tipo === "monte-pizza"
-) {
+  // Se o produto possui adicionais (mas NÃO monte-pizza)
+  if (produto.adicionais) {
 
     abrirModal(produto);
 

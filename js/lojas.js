@@ -41,7 +41,7 @@ const LOJAS = {
         {
     nome: "Monte sua Pizza!",
     tipo: "monte-pizza",
-    img: "imagens/pizzaria/",
+    img: "imagens/pizzaria/msp.png",
 
     tamanhos: {
         P: 35,
