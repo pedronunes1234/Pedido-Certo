@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (textoEndereco) {
     const enderecoSalvo = localStorage.getItem("enderecoUsuario");
-
     if (enderecoSalvo) {
       textoEndereco.textContent = enderecoSalvo;
     }
@@ -653,7 +652,6 @@ card.querySelector(`#mais-${baseId}`).addEventListener("click", (e) => {
   });
 
 });
-
 
 function abrirCarrinho() {
   localStorage.setItem("carrinho", JSON.stringify(window.carrinho));
