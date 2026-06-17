@@ -51,30 +51,35 @@
 
     <label class="opcao">
       <input type="radio" name="pagamento" value="Cartão">
+      <span class="check-radio"></span>
       Cartão na entrega
     </label>
 
     <label class="opcao">
       <input type="radio" name="pagamento" value="Pix">
+      <span class="check-radio"></span>
       Pix
     </label>
 
     <label class="opcao">
       <input type="radio" name="pagamento" value="Dinheiro" id="radioDinheiro">
+      <span class="check-radio"></span>
       Dinheiro
     </label>
 
     <!-- TROCO (COMEÇA ESCONDIDO) -->
     <div id="trocoBox" class="troco-box" style="display: none;">
-      <p>Precisa de troco?</p>
+      <p style="font-size:15px; font-weight:bold; color:#222; margin-bottom:10px;">Precisa de troco?</p>
 
-      <label>
+      <label class="opcao">
         <input type="radio" name="troco" value="Não" checked>
+        <span class="check-radio"></span>
         Não
       </label>
 
-      <label>
+      <label class="opcao">
         <input type="radio" name="troco" value="Sim" id="trocoSim">
+        <span class="check-radio"></span>
         Sim
       </label>
 
@@ -83,7 +88,6 @@
         <input type="number" id="valorTrocoInput" placeholder="Ex: 100">
       </div>
     </div>
-  </div>
 
   <!-- BOTÃO FINALIZAR -->
   <button id="btnFinalizar" class="btn-finalizar">

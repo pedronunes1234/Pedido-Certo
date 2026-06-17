@@ -109,21 +109,42 @@ document.addEventListener("DOMContentLoaded", () => {
   radios.forEach(radio => {
     radio.addEventListener("change", () => {
 
+      document.querySelectorAll('input[name="pagamento"]').forEach(r => {
+        r.closest(".opcao").classList.remove("selecionado");
+      });
+      radio.closest(".opcao").classList.add("selecionado");
+
       if (radio.value === "Dinheiro" && radio.checked) {
         trocoBox.style.display = "block";
+
+        // Inicializa o "Não" como selecionado visualmente
+        const trocoNao = document.querySelector('input[name="troco"][value="Não"]');
+        trocoNao.checked = true;
+        document.querySelectorAll('input[name="troco"]').forEach(r => {
+          r.closest(".opcao").classList.remove("selecionado");
+        });
+        trocoNao.closest(".opcao").classList.add("selecionado");
+        valorTrocoBox.style.display = "none";
+
       } else {
         trocoBox.style.display = "none";
         valorTrocoBox.style.display = "none";
       }
     });
   });
-
   trocoSim.addEventListener("change", () => {
     valorTrocoBox.style.display = "block";
   });
 
   document.querySelectorAll('input[name="troco"]').forEach(r => {
     r.addEventListener("change", () => {
+
+      // Atualiza visual
+      document.querySelectorAll('input[name="troco"]').forEach(radio => {
+        radio.closest(".opcao").classList.remove("selecionado");
+      });
+      r.closest(".opcao").classList.add("selecionado");
+
       if (r.value === "Não") {
         valorTrocoBox.style.display = "none";
       }
@@ -186,10 +207,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const troco = document.querySelector('input[name="troco"]:checked');
 
       if (troco && troco.value === "Sim") {
-        const valorTroco = document.getElementById("valorTrocoInput").value;
+        const valorTroco = parseFloat(document.getElementById("valorTrocoInput").value);
 
         if (!valorTroco) {
-          alert("Informe o troco.");
+          alert("Informe o valor do troco.");
+          return;
+        }
+
+        if (valorTroco < total) {
+          alert(`O valor do troco (R$ ${valorTroco.toFixed(2)}) é inferior ao total do pedido (R$ ${total.toFixed(2)}). Por favor, informe um valor maior.`);
           return;
         }
 
