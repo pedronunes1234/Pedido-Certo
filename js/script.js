@@ -253,11 +253,13 @@ console.log("ABRIU MODAL");
 
     listaSabores.innerHTML = "";
 
-    modal.querySelectorAll(".btn-tamanho").forEach(b => b.classList.remove("ativo"));
-    modal.querySelector('.btn-tamanho[data-size="P"]').classList.add("ativo");
-
+    // BORDAS RECHEADAS
+    // VARIÁVEIS PRINCIPAIS (declaradas antes das bordas)
     let tamanho = "P";
     let saboresSelecionados = [];
+    let basePrice = produto.tamanhos[tamanho];
+    let precoExtraBorda = 0;
+    let bordaSelecionada = { nome: "Sem borda", preco: 0 };
 
     const limiteSabores = {
         P: 2,
@@ -265,16 +267,53 @@ console.log("ABRIU MODAL");
         G: 3
     };
 
-    let basePrice = produto.tamanhos[tamanho];
-    let total = basePrice;
+    // BORDAS RECHEADAS
+    const opcoesBordas = [
+        { nome: "Sem borda", preco: 0 },
+        { nome: "Borda de Catupiry", preco: 5 },
+        { nome: "Borda de Cheddar", preco: 5 },
+        { nome: "Borda de Chocolate", preco: 6 }
+    ];
+
+    const bordaExistente = document.getElementById("secaoBordas");
+    if (bordaExistente) bordaExistente.remove();
+
+    const secaoBordas = document.createElement("div");
+    secaoBordas.id = "secaoBordas";
+    secaoBordas.style.cssText = "padding: 0 20px 10px;";
+    secaoBordas.innerHTML = `<p style="font-weight:bold; font-size:16px; margin-bottom:10px; color:#222;">Escolha a borda:</p>`;
+
+    opcoesBordas.forEach(borda => {
+        const btn = document.createElement("button");
+        btn.className = "btn-borda" + (borda.nome === "Sem borda" ? " ativo" : "");
+        btn.textContent = borda.preco === 0
+            ? borda.nome
+            : `${borda.nome} (+R$ ${borda.preco.toFixed(2)})`;
+        btn.addEventListener("click", () => {
+            secaoBordas.querySelectorAll(".btn-borda").forEach(b => b.classList.remove("ativo"));
+            btn.classList.add("ativo");
+            basePrice -= precoExtraBorda;
+            precoExtraBorda = borda.preco;
+            basePrice += precoExtraBorda;
+            bordaSelecionada = borda;
+            modalTotal.textContent = "R$ " + basePrice.toFixed(2);
+        });
+        secaoBordas.appendChild(btn);
+    });
+
+    listaSabores.before(secaoBordas);
+
+    modal.querySelectorAll(".btn-tamanho").forEach(b => b.classList.remove("ativo"));
+    modal.querySelector('.btn-tamanho[data-size="P"]').classList.add("ativo");
 
     modalPrecoBase.textContent = "Preço Base: R$ " + basePrice.toFixed(2);
     modalTotal.textContent = "R$ " + basePrice.toFixed(2);
+    contador.textContent = `0/${limiteSabores[tamanho]}`;
 
-    contador.textContent = `Selecionados: 0/${limiteSabores[tamanho]}`;
+    contador.textContent = `0/${limiteSabores[tamanho]}`;
 
     // ===============================
-    // 🔥 BOTÕES P / M / G (SEM DUPLICAR EVENTO)
+    //  BOTÕES P / M / G (SEM DUPLICAR EVENTO)
     // ===============================
     const botoesTamanho = modal.querySelectorAll(".btn-tamanho");
 
@@ -315,7 +354,7 @@ console.log("ABRIU MODAL");
     });
 
     // ===============================
-    // 🔥 SABORES
+    //  SABORES
     // ===============================
     produto.sabores.forEach(sabor => {
 
@@ -323,41 +362,39 @@ console.log("ABRIU MODAL");
         item.className = "item-sabor-pizza";
 
         item.innerHTML = `
-            <label>
-                <input type="checkbox">
-                ${sabor}
+            <label class="label-sabor">
+                <span class="check-custom"></span>
+                <span class="nome-sabor">${sabor}</span>
             </label>
         `;
 
-        const checkbox = item.querySelector("input");
+        let marcado = false;
 
-        checkbox.addEventListener("change", () => {
-
+        item.addEventListener("click", () => {
             const limite = limiteSabores[tamanho];
 
-            if (checkbox.checked) {
-
+            if (!marcado) {
                 if (saboresSelecionados.length >= limite) {
-                    checkbox.checked = false;
                     alert(`Máximo de ${limite} sabores para tamanho ${tamanho}`);
                     return;
                 }
-
+                marcado = true;
                 saboresSelecionados.push(sabor);
+                item.querySelector(".check-custom").classList.add("marcado");
             } else {
-                saboresSelecionados =
-                    saboresSelecionados.filter(s => s !== sabor);
+                marcado = false;
+                saboresSelecionados = saboresSelecionados.filter(s => s !== sabor);
+                item.querySelector(".check-custom").classList.remove("marcado");
             }
 
-            contador.textContent =
-                `Selecionados: ${saboresSelecionados.length}/${limite}`;
+            contador.textContent = `${saboresSelecionados.length}/${limite}`;
         });
 
         listaSabores.appendChild(item);
     });
 
     // ===============================
-    // 🔥 BOTÃO FINAL (INTEGRADO AO SEU CARRINHO)
+    //  BOTÃO FINAL (INTEGRADO AO SEU CARRINHO)
     // ===============================
     btnAdicionarCarrinho.onclick = () => {
 
@@ -366,17 +403,16 @@ console.log("ABRIU MODAL");
             return;
         }
 
-        const id = gerarId(produto, tamanho, "pizza");
+        const id = gerarId(produto, tamanho, "pizza") + "-" + Date.now();
 
-        if (!carrinho[id]) {
-            carrinho[id] = {
-                nome: `${produto.nome} (${tamanho})`,
-                preco: basePrice,
-                qtd: 0
-            };
-        }
-
-        carrinho[id].qtd++;
+        carrinho[id] = {
+            nome: `${produto.nome} (${tamanho})`,
+            preco: basePrice,
+            qtd: 1,
+            tamanho: tamanho,
+            sabores: [...saboresSelecionados],
+            borda: bordaSelecionada.nome
+        };
 
         atualizarTotal();
 
@@ -452,9 +488,13 @@ console.log("ABRIU MODAL");
         
 
         <div class="controle-qtd">
-          <button class="btn-qtd" id="menos-${baseId}">−</button>
-          <span class="qtd-numero" id="qtd-${baseId}">0</span>
-          <button class="btn-qtd" id="mais-${baseId}">+</button>
+          ${produto.tipo === "monte-pizza"
+            ? `<button class="btn-qtd btn-qtd-pizza" id="mais-${baseId}">+</button>`
+            : `
+              <button class="btn-qtd" id="menos-${baseId}">−</button>
+              <span class="qtd-numero" id="qtd-${baseId}">0</span>
+              <button class="btn-qtd" id="mais-${baseId}">+</button>
+            `}
         </div>
       `;
 
@@ -583,7 +623,8 @@ card.querySelector(`#mais-${baseId}`).addEventListener("click", (e) => {
   e.stopPropagation();
 
   // Se o produto possui adicionais (mas NÃO monte-pizza)
-  if (produto.adicionais) {
+  // Se o produto possui adicionais OU é monte-pizza, abre o modal
+  if (produto.adicionais || produto.tipo === "monte-pizza") {
 
     abrirModal(produto);
 
@@ -616,7 +657,8 @@ card.querySelector(`#mais-${baseId}`).addEventListener("click", (e) => {
 });
 
       // BOTÃO -
-      card.querySelector(`#menos-${baseId}`).addEventListener("click", () => {
+      const btnMenosCard = card.querySelector(`#menos-${baseId}`);
+      if (btnMenosCard) btnMenosCard.addEventListener("click", () => {
 
         const idFinal = gerarId(produto, tamanhoSelecionado, marcaSelecionada);
         if (!carrinho[idFinal]) return;

@@ -41,9 +41,19 @@ document.addEventListener("DOMContentLoaded", () => {
       div.innerHTML = `
         <div class="info-item">
           <h4>${item.nome}</h4>
-          <p>
-            ${item.tamanho ? "Tamanho: " + item.tamanho : ""}
-            ${item.marca ? " • " + item.marca : ""}
+          <p class="desc-item">
+            ${item.sabores && item.sabores.length > 0
+              ? ` Sabores: ${item.sabores.join(", ")}`
+              : ""}
+            ${item.borda && item.borda !== "Sem borda"
+              ? `<br> Borda: ${item.borda}`
+              : ""}
+            ${item.tamanho && !item.sabores
+              ? `📏 Tamanho: ${item.tamanho}`
+              : ""}
+            ${item.marca
+              ? `<br>🥤 ${item.marca}`
+              : ""}
           </p>
 
           <div class="controle">
@@ -152,11 +162,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const totalItem = item.preco * item.qtd;
       total += totalItem;
 
-      mensagem += `• ${item.nome}`;
-      if (item.tamanho) mensagem += ` (${item.tamanho})`;
-      if (item.marca) mensagem += ` - ${item.marca}`;
-
-      mensagem += `\n${item.qtd}x R$ ${item.preco.toFixed(2)} = R$ ${totalItem.toFixed(2)}\n\n`;
+      mensagem += `• ${item.nome}\n`;
+      if (item.sabores && item.sabores.length > 0)
+        mensagem += `  Sabores: ${item.sabores.join(", ")}\n`;
+      if (item.borda && item.borda !== "Sem borda")
+        mensagem += `  Borda: ${item.borda}\n`;
+      if (item.marca)
+        mensagem += `  Marca: ${item.marca}\n`;
+      mensagem += `  ${item.qtd}x R$ ${item.preco.toFixed(2)} = R$ ${totalItem.toFixed(2)}\n\n`;
     });
 
     mensagem += ` Total: R$ ${total.toFixed(2)}\n`;
