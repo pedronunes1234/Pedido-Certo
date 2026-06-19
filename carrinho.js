@@ -41,18 +41,21 @@ document.addEventListener("DOMContentLoaded", () => {
       div.innerHTML = `
         <div class="info-item">
           <h4>${item.nome}</h4>
-          <p class="desc-item">
+            <p class="desc-item">
             ${item.sabores && item.sabores.length > 0
               ? ` Sabores: ${item.sabores.join(", ")}`
               : ""}
             ${item.borda && item.borda !== "Sem borda"
               ? `<br> Borda: ${item.borda}`
               : ""}
+            ${item.adicionais && item.adicionais.length > 0
+              ? `<br> Adicionais: ${item.adicionais.join(", ")}`
+              : ""}
             ${item.tamanho && !item.sabores
               ? `📏 Tamanho: ${item.tamanho}`
               : ""}
             ${item.marca
-              ? `<br>🥤 ${item.marca}`
+              ? `<br> ${item.marca}`
               : ""}
           </p>
 
@@ -191,6 +194,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (item.marca)
         mensagem += `  Marca: ${item.marca}\n`;
       mensagem += `  ${item.qtd}x R$ ${item.preco.toFixed(2)} = R$ ${totalItem.toFixed(2)}\n\n`;
+       if (item.adicionais && item.adicionais.length > 0)
+        mensagem += `  Adicionais: ${item.adicionais.join(", ")}\n`;
     });
 
     mensagem += ` Total: R$ ${total.toFixed(2)}\n`;

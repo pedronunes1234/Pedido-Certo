@@ -136,27 +136,13 @@ const LOJAS = {
     nome: "X-Burguer",
     preco: 15,
     img: "imagens/hamburgueria/x-burger.png",
+    descricao: "Pão, hambúrguer, salada, ovo, queijo, presunto e salada",
 
-    adicionais: [
-      {
-        nome: "Bacon",
-        preco: 3
-      },
-
-      {
-        nome: "Presunto",
-        preco: 2
-      },
-
-      {
-        nome: "Ovo",
-        preco: 2
-      },
-
-      {
-        nome: "Queijo Extra",
-        preco: 3
-      }
+     adicionais: [
+      { nome: "Bacon", preco: 3 },
+      { nome: "Presunto", preco: 2 },
+      { nome: "Ovo", preco: 2 },
+      { nome: "Queijo ", preco: 3 }
     ]
   },
 
@@ -164,22 +150,12 @@ const LOJAS = {
     nome: "X-Bacon",
     preco: 18,
     img: "imagens/hamburgueria/x-bancon.jpg",
+     descricao: "Pão, hambúrguer, cheddar, bacon e salada",
 
-    adicionais: [
-      {
-        nome: "Bacon Extra",
-        preco: 3
-      },
-
-      {
-        nome: "Ovo",
-        preco: 2
-      },
-
-      {
-        nome: "Queijo Extra",
-        preco: 3
-      }
+     adicionais: [
+      { nome: "Hamburguer ", preco: 3 },
+      { nome: "Bacon", preco: 2 },
+      { nome: "Cheddar", preco: 3 }
     ]
   },
 
@@ -187,33 +163,16 @@ const LOJAS = {
     nome: "X-Tudo",
     preco: 25,
     img: "imagens/hamburgueria/x-tudo.png",
+    descricao: "Pão, hambúrguer, cheddar, bacon, presunto, ovo, calabresa e salada",
 
-    adicionais: [
-      {
-        nome: "Bacon",
-        preco: 3
-      },
-
-      {
-        nome: "Presunto",
-        preco: 2
-      },
-
-      {
-        nome: "Ovo",
-        preco: 2
-      },
-
-      {
-        nome: "Queijo Extra",
-        preco: 3
-      },
-
-      {
-        nome: "Calabresa",
-        preco: 4
-      }
+  adicionais: [
+      { nome: "Bacon", preco: 3 },
+      { nome: "Presunto", preco: 2 },
+      { nome: "Ovo", preco: 2 },
+      { nome: "Queijo Extra", preco: 3 },
+      { nome: "Calabresa", preco: 4 }
     ]
+    
   }
     ],
 

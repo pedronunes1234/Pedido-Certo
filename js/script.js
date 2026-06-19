@@ -158,20 +158,24 @@ console.log("ABRIU MODAL");
         return;
     }
 
-    btnAdicionarCarrinho.onclick = () => {
+  btnAdicionarCarrinho.onclick = () => {
 
-    const id = Date.now();
+        const adicionaisSelecionadosNomes = adicionaisSelecionados
+            .filter(a => a.qtd > 0)
+            .map(a => `${a.nome} x${a.qtd}`);
 
-    carrinho[id] = {
-        nome: produtoAtual.nome,
-        preco: totalModal,
-        qtd: 1
+        const id = Date.now();
+
+        carrinho[id] = {
+            nome: produtoAtual.nome,
+            preco: totalModal,
+            qtd: 1,
+            adicionais: adicionaisSelecionadosNomes
+        };
+
+        atualizarTotal();
+        modal.style.display = "none";
     };
-
-    atualizarTotal();
-
-    modal.style.display = "none";
-};
 
     totalModal = produto.preco;
 
@@ -224,6 +228,11 @@ console.log("ABRIU MODAL");
             modalTotal.textContent =
                 "R$ " +
                 totalModal.toFixed(2);
+
+                 // Rastrear adicional
+            const existente = adicionaisSelecionados.find(a => a.nome === adicional.nome);
+            if (existente) existente.qtd = qtd;
+            else adicionaisSelecionados.push({ nome: adicional.nome, qtd });
         });
 
         btnMenos.addEventListener("click", () => {
@@ -239,6 +248,10 @@ console.log("ABRIU MODAL");
             modalTotal.textContent =
                 "R$ " +
                 totalModal.toFixed(2);
+
+                // Rastrear adicional
+            const existente = adicionaisSelecionados.find(a => a.nome === adicional.nome);
+            if (existente) existente.qtd = qtd;
         });
 
         listaAdicionais.appendChild(linha);
@@ -462,6 +475,10 @@ console.log("ABRIU MODAL");
         <div class="produto-info">
           <h3>${produto.nome}</h3>
 
+          ${produto.descricao
+            ? `<p class="descricao-produto">${produto.descricao}</p>`
+            : ""}
+
           <p class="preco-produto" id="preco-${baseId}">
             R$ ${precoAtual.toFixed(2)}
           </p>
@@ -485,7 +502,6 @@ console.log("ABRIU MODAL");
             </div>
           ` : ""}
         </div>
-        
 
         <div class="controle-qtd">
           ${produto.tipo === "monte-pizza"
