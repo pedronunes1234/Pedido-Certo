@@ -13,6 +13,7 @@ const LOJAS = {
         {
           nome: "Pizza Calabresa",
           img: "imagens/pizzaria/pizza.calabr.png",
+          descricao: "Calabresa, cebola e orégano",
           tamanhos: {
             P: 30,
             M: 40,
@@ -22,6 +23,7 @@ const LOJAS = {
         {
           nome: "Pizza Mussarela",
           img: "imagens/pizzaria/pizza.mussa.png",
+          descricao: "Queijo mussarela e orégano",
           tamanhos: {
             P: 30,
             M: 40,
@@ -31,6 +33,7 @@ const LOJAS = {
         {
           nome: "Pizza Frango com Catupiry",
           img: "imagens/pizzaria/pizza.fra.cap.png",
+          descricao: "Frango desfiado, catupiry, azeitona e orégano",
           tamanhos: {
             P: 30,
             M: 40,

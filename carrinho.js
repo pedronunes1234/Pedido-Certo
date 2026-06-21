@@ -109,6 +109,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const trocoSim = document.getElementById("trocoSim");
   const valorTrocoBox = document.getElementById("valorTrocoBox");
 
+  const valorTrocoInput = document.getElementById("valorTrocoInput");
+
+  valorTrocoInput.addEventListener("input", () => {
+    // Remove qualquer caractere que não seja número ou ponto
+    let valor = valorTrocoInput.value.replace(/[^0-9.]/g, "");
+
+    // Garante apenas um ponto decimal
+    const partes = valor.split(".");
+    if (partes.length > 2) {
+      valor = partes[0] + "." + partes.slice(1).join("");
+    }
+
+    valorTrocoInput.value = valor;
+  });
+
   radios.forEach(radio => {
     radio.addEventListener("change", () => {
 
@@ -212,10 +227,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const troco = document.querySelector('input[name="troco"]:checked');
 
       if (troco && troco.value === "Sim") {
-        const valorTroco = parseFloat(document.getElementById("valorTrocoInput").value);
+        const valorTrocoRaw = document.getElementById("valorTrocoInput").value;
+        const valorTroco = parseFloat(valorTrocoRaw);
 
-        if (!valorTroco) {
-          alert("Informe o valor do troco.");
+        if (!valorTrocoRaw || isNaN(valorTroco) || valorTroco <= 0) {
+          alert("Informe um valor de troco válido e positivo.");
           return;
         }
 
@@ -224,7 +240,8 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
-        mensagem += ` Troco para: R$ ${parseFloat(valorTroco).toFixed(2)}\n`;
+        mensagem += ` Troco para: R$ ${valorTroco.toFixed(2)}\n`;
+        mensagem += ` Troco a devolver: R$ ${(valorTroco - total).toFixed(2)}\n`;
       }
     }
 
