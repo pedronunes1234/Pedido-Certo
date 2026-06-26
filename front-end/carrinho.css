@@ -1,4 +1,5 @@
 *{
+   
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -13,18 +14,24 @@ html, body{
 }
 
 /* CONTAINER */
-.carrinho-container{
+.carrinho-container {
     width: 100%;
-    max-width: 420px;
-    height: 100dvh;
-
- margin: auto;
-
+    max-width: 600px;
+    min-height: 100dvh;
+    margin: 0 auto;
     background: #fff;
     display: flex;
     flex-direction: column;
+    padding-bottom: 30px;
 }
 
+
+@media (max-width: 600px) {
+    .carrinho-container {
+        max-width: 100%;
+        min-height: 100dvh;
+    }
+}
 /* TOPO */
 .topo-carrinho{
     background: linear-gradient(to right, #e60000, #ff3b3b);
@@ -190,7 +197,7 @@ html, body{
 .troco-box{
     margin-top: 10px;
     padding: 10px;
-    background: #fafafa;
+    background: #ffffff81;
     border-radius: 8px;
     display: none;
 }
@@ -198,6 +205,7 @@ html, body{
 .valor-troco{
     margin-top: 8px;
     display: none;
+    font-weight: bolder;
 }
 
 .valor-troco input{
@@ -205,7 +213,7 @@ html, body{
     padding: 8px;
     margin-top: 5px;
     border-radius: 6px;
-    border: 1px solid #ccc;
+    border: 2px solid #f30000;
 }
 
 /* BOTÃO FINAL */

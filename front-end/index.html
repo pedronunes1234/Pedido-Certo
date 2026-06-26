@@ -28,16 +28,13 @@
         Adicionar endereço <span class="seta">➜</span>
       </button>
 
-      <input
-        type="text"
-        id="inputEndereco"
-        class="input-endereco"
-        placeholder="Nome da rua, numero, referencia"
-      >
-
-      <button class="btn-salvar" id="btnSalvarEndereco">
-        Salvar endereço
-      </button>
+      <div id="camposEndereco" style="display:none;">
+        <input type="text" id="inputRua" class="input-endereco" placeholder="Nome da rua">
+        <input type="text" id="inputNumero" class="input-endereco" placeholder="Número da casa">
+        <input type="text" id="inputComplemento" class="input-endereco" placeholder="Complemento (apto, bloco...)">
+        <input type="text" id="inputReferencia" class="input-endereco" placeholder="Ponto de referência">
+        <button class="btn-salvar" id="btnSalvarEndereco">Salvar endereço</button>
+      </div>
 
     </div>
   </section>

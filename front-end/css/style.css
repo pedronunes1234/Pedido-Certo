@@ -86,7 +86,8 @@ html, body {
   border: none;
   padding: 12px;
   border-radius: 10px;
-  display: none;
+  cursor: pointer;
+  display: block;
 }
 
 
@@ -1013,4 +1014,9 @@ html, body {
     margin-bottom: 4px;
     line-height: 1.4;
     font-weight: normal;
+}
+
+#camposEndereco .input-endereco {
+    margin-top: 8px;
+    display: block;
 }

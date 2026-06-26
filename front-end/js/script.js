@@ -5,8 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // ===============================
   const textoEndereco = document.getElementById("textoEndereco");
   const btnEndereco = document.getElementById("btnEndereco");
-  const inputEndereco = document.getElementById("inputEndereco");
-  const btnSalvarEndereco = document.getElementById("btnSalvarEndereco");
 
   if (textoEndereco) {
     const enderecoSalvo = localStorage.getItem("enderecoUsuario");
@@ -14,28 +12,40 @@ document.addEventListener("DOMContentLoaded", () => {
       textoEndereco.textContent = enderecoSalvo;
     }
 
+    const camposEndereco = document.getElementById("camposEndereco");
+    const inputRua = document.getElementById("inputRua");
+    const inputNumero = document.getElementById("inputNumero");
+    const inputComplemento = document.getElementById("inputComplemento");
+    const inputReferencia = document.getElementById("inputReferencia");
+    const btnSalvarEndereco = document.getElementById("btnSalvarEndereco");
+
     if (btnEndereco) {
       btnEndereco.addEventListener("click", () => {
-        inputEndereco.style.display = "block";
-        btnSalvarEndereco.style.display = "block";
-        inputEndereco.focus();
+        camposEndereco.style.display = "block";
+        inputRua.focus();
       });
     }
 
     if (btnSalvarEndereco) {
       btnSalvarEndereco.addEventListener("click", () => {
-        const valor = inputEndereco.value.trim();
+        const rua = inputRua.value.trim();
+        const numero = inputNumero.value.trim();
+        const complemento = inputComplemento.value.trim();
+        const referencia = inputReferencia.value.trim();
 
-        if (!valor) {
-          alert("Digite seu endereço.");
+        if (!rua || !numero) {
+          alert("Informe pelo menos a rua e o número.");
           return;
         }
 
-        localStorage.setItem("enderecoUsuario", valor);
-        textoEndereco.textContent = valor;
+        let endereco = `${rua}, ${numero}`;
+        if (complemento) endereco += ` - ${complemento}`;
+        if (referencia) endereco += ` (${referencia})`;
 
-        inputEndereco.style.display = "none";
-        btnSalvarEndereco.style.display = "none";
+        localStorage.setItem("enderecoUsuario", endereco);
+        textoEndereco.textContent = endereco;
+
+        camposEndereco.style.display = "none";
       });
     }
   }
@@ -258,6 +268,103 @@ console.log("ABRIU MODAL");
     });
 }
 
+function abrirModalBorda(produto, tamanhoInicial, precoInicial) {
+
+    produtoAtual = produto;
+
+    modal.style.display = "flex";
+    modalImagem.src = produto.img;
+    modalNome.textContent = produto.nome;
+
+    let tamanho = tamanhoInicial;
+    let basePrice = precoInicial;
+    let precoExtraBorda = 0;
+    let bordaSelecionada = { nome: "Sem borda", preco: 0 };
+
+    modalPrecoBase.textContent = "Tamanho: " + tamanho;
+    modalTotal.textContent = "R$ " + basePrice.toFixed(2);
+
+    // Limpa conteúdo anterior
+    listaAdicionais.innerHTML = "";
+    document.getElementById("contadorSabores").textContent = "";
+
+    const bordaExistente = document.getElementById("secaoBordas");
+    if (bordaExistente) bordaExistente.remove();
+
+    // SEÇÃO DE BORDAS
+    const opcoesBordas = [
+        { nome: "Sem borda", preco: 0 },
+        { nome: "Borda de Catupiry", preco: 5 },
+        { nome: "Borda de Cheddar", preco: 5 },
+        { nome: "Borda de Chocolate", preco: 6 }
+    ];
+
+    const secaoBordas = document.createElement("div");
+    secaoBordas.id = "secaoBordas";
+    secaoBordas.style.cssText = "padding: 0 20px 10px;";
+    secaoBordas.innerHTML = `<p style="font-weight:bold; font-size:16px; margin-bottom:10px; color:#222;">Escolha a borda:</p>`;
+
+    opcoesBordas.forEach(borda => {
+        const btn = document.createElement("button");
+        btn.className = "btn-borda" + (borda.nome === "Sem borda" ? " ativo" : "");
+        btn.textContent = borda.preco === 0
+            ? borda.nome
+            : `${borda.nome} (+R$ ${borda.preco.toFixed(2)})`;
+
+        btn.addEventListener("click", () => {
+            secaoBordas.querySelectorAll(".btn-borda").forEach(b => b.classList.remove("ativo"));
+            btn.classList.add("ativo");
+            basePrice -= precoExtraBorda;
+            precoExtraBorda = borda.preco;
+            basePrice += precoExtraBorda;
+            bordaSelecionada = borda;
+            modalTotal.textContent = "R$ " + basePrice.toFixed(2);
+        });
+
+        secaoBordas.appendChild(btn);
+    });
+
+    listaAdicionais.before(secaoBordas);
+
+    // BOTÕES P / M / G DO MODAL
+    modal.querySelectorAll(".btn-tamanho").forEach(b => b.classList.remove("ativo"));
+    const btnAtivo = modal.querySelector(`.btn-tamanho[data-size="${tamanho}"]`);
+    if (btnAtivo) btnAtivo.classList.add("ativo");
+
+    modal.querySelectorAll(".btn-tamanho").forEach(btn => {
+        btn.replaceWith(btn.cloneNode(true)); // remove listeners antigos
+    });
+
+    modal.querySelectorAll(".btn-tamanho").forEach(btn => {
+        btn.addEventListener("click", () => {
+            modal.querySelectorAll(".btn-tamanho").forEach(b => b.classList.remove("ativo"));
+            btn.classList.add("ativo");
+
+            tamanho = btn.dataset.size;
+            basePrice = produto.tamanhos[tamanho] + precoExtraBorda;
+
+            modalPrecoBase.textContent = "Tamanho: " + tamanho;
+            modalTotal.textContent = "R$ " + basePrice.toFixed(2);
+        });
+    });
+
+    // BOTÃO ADICIONAR
+    btnAdicionarCarrinho.onclick = () => {
+
+        const id = Date.now();
+
+        carrinho[id] = {
+            nome: `${produto.nome} (${tamanho})`,
+            preco: basePrice,
+            qtd: 1,
+            tamanho: tamanho,
+            borda: bordaSelecionada.nome
+        };
+
+        atualizarTotal();
+        modal.style.display = "none";
+    };
+}
 
   function criarMonteSuaPizza(produto) {
 
@@ -641,11 +748,15 @@ card.querySelector(`#mais-${baseId}`).addEventListener("click", (e) => {
   // Se o produto possui adicionais (mas NÃO monte-pizza)
   // Se o produto possui adicionais OU é monte-pizza, abre o modal
   if (produto.adicionais || produto.tipo === "monte-pizza") {
-
     abrirModal(produto);
-
     return;
-}
+  }
+
+  // Pizzas com tamanhos mas sem adicionais (calabresa, mussarela, frango)
+  if (produto.tamanhos && !produto.tipo) {
+    abrirModalBorda(produto, tamanhoSelecionado, precoAtual);
+    return;
+  }
 
   const idFinal = gerarId(
     produto,

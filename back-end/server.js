@@ -1,0 +1,59 @@
+const express = require("express");
+const cors = require("cors");
+const path = require("path");
+
+// Conexão com o banco
+const db = require("./config/database");
+
+const app = express();
+const PORT = 3000;
+
+// Middlewares
+app.use(cors());
+app.use(express.json());
+
+// Caminho do front-end
+const frontendPath = path.join(__dirname, "../front-end");
+
+// Servir arquivos estáticos
+app.use(express.static(frontendPath));
+
+// Importar rotas
+const pedidoRoutes = require("./routes/pedidoRoutes");
+
+// Rotas da API
+app.use("/api/pedidos", pedidoRoutes);
+
+// Página inicial
+app.get("/", (req, res) => {
+    res.sendFile(path.join(frontendPath, "index.html"));
+});
+
+// Testar conexão com o banco
+app.get("/api/teste-banco", (req, res) => {
+    db.query("SELECT 1 AS teste", (err, results) => {
+        if (err) {
+            return res.status(500).json({
+                sucesso: false,
+                erro: err.message
+            });
+        }
+
+        res.json({
+            sucesso: true,
+            mensagem: "Banco conectado com sucesso!",
+            resultado: results
+        });
+    });
+});
+
+// Inicializar servidor
+app.listen(PORT, () => {
+    console.log(`🚀 Pedido Certo rodando em http://127.0.0.1:${PORT}`);
+});
+
+
+
+
+
+
