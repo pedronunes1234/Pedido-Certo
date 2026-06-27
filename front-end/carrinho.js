@@ -252,7 +252,7 @@ if (item.marca) {
     btnFinalizar.textContent = "Enviando...";
     const loja = localStorage.getItem("lojaSelecionada");
     console.log("Loja:", loja);
-    fetch("http://127.0.0.1:3000/api/pedidos", {
+    fetch("https://pedido-certo-production.up.railway.app/api/pedidos", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
