@@ -203,7 +203,6 @@ if (item.marca) {
     mensagem += `Marca: ${item.marca}\n`;
 }
 
-mensagem += `${item.qtd}x R$ ${item.preco.toFixed(2)} = R$ ${totalItem.toFixed(2)}\n\n`;
       mensagem += `${item.qtd}x R$ ${item.preco.toFixed(2)} = R$ ${totalItem.toFixed(2)}\n\n`;
     });
 
@@ -251,11 +250,13 @@ mensagem += `${item.qtd}x R$ ${item.preco.toFixed(2)} = R$ ${totalItem.toFixed(2
     const btnFinalizar = document.getElementById("btnFinalizar");
     btnFinalizar.disabled = true;
     btnFinalizar.textContent = "Enviando...";
-
+    const loja = localStorage.getItem("lojaSelecionada");
+    console.log("Loja:", loja);
     fetch("http://127.0.0.1:3000/api/pedidos", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        loja: loja,
         nome_cliente: nome,
         endereco: endereco,
         telefone: "",

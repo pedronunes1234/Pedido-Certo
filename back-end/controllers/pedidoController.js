@@ -22,18 +22,19 @@ exports.listarPedidos = (req, res) => {
 // CRIAR PEDIDO COMPLETO (COM ITENS)
 exports.criarPedido = (req, res) => {
 
-    const { nome_cliente, endereco, telefone, pagamento, total, itens } = req.body;
+    console.log(req.body);
+
+    const {loja,nome_cliente,endereco,telefone,pagamento,total,itens} = req.body;
 
     // 1. Criar pedido principal
-    const sqlPedido = `
-        INSERT INTO pedidos (nome_cliente, endereco, telefone, pagamento, total)
-        VALUES (?, ?, ?, ?, ?)
-    `;
+   const sqlPedido = `
+    INSERT INTO pedidos
+    (loja, nome_cliente, endereco, telefone, pagamento, total)
+    VALUES (?, ?, ?, ?, ?, ?)
+`;
 
     db.query(sqlPedido,
-        [nome_cliente, endereco, telefone, pagamento, total],
-        (err, result) => {
-
+    [loja,nome_cliente,endereco,telefone,pagamento,total],(err, result) => {
             if (err) {
                 return res.status(500).json({
                     sucesso: false,
