@@ -6,5 +6,6 @@ router.get("/", pedidoController.listarPedidos);
 router.post("/", pedidoController.criarPedido);
 router.get("/loja/:loja", pedidoController.listarPedidosPorLoja);
 router.put("/:id/status", pedidoController.atualizarStatus);
+router.get("/dados-loja/:loja", pedidoController.dadosLoja);
 
 module.exports = router;

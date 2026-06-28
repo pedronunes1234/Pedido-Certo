@@ -106,3 +106,18 @@ exports.criarPedido = (req, res) => {
         }
     });
 };
+
+// BUSCAR DADOS DA LOJA (chave pix e whatsapp)
+exports.dadosLoja = (req, res) => {
+    const { loja } = req.params;
+
+    db.query(
+        "SELECT chave_pix, whatsapp FROM usuarios WHERE loja = ?",
+        [loja],
+        (err, results) => {
+            if (err) return res.status(500).json({ sucesso: false, erro: err.message });
+            if (results.length === 0) return res.json({ sucesso: false });
+            res.json({ sucesso: true, dados: results[0] });
+        }
+    );
+};
