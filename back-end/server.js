@@ -6,7 +6,7 @@ const path = require("path");
 const db = require("./config/database");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Middlewares
 app.use(cors());
@@ -20,9 +20,11 @@ app.use(express.static(frontendPath));
 
 // Importar rotas
 const pedidoRoutes = require("./routes/pedidoRoutes");
+const usuarioRoutes = require("./routes/usuarioRoutes");
 
 // Rotas da API
 app.use("/api/pedidos", pedidoRoutes);
+app.use("/api/usuarios", usuarioRoutes);
 
 // Página inicial
 app.get("/", (req, res) => {
@@ -49,11 +51,5 @@ app.get("/api/teste-banco", (req, res) => {
 
 // Inicializar servidor
 app.listen(PORT, () => {
-    console.log(`🚀 Pedido Certo rodando em http://127.0.0.1:${PORT}`);
+    console.log(`🚀 Pedido Certo rodando na porta ${PORT}`);
 });
-
-
-
-
-
-
