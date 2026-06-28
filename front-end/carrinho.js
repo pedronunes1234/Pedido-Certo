@@ -146,13 +146,11 @@ document.addEventListener("DOMContentLoaded", () => {
   renderizarCarrinho();
 
   // 🚀 FINALIZAR PEDIDO
-  document.getElementById("btnFinalizar").addEventListener("click", () => {
+  document.getElementById("btnFinalizar").addEventListener("click", async () => {
 
     const nome = nomeInput.value.trim();
     const pagamentoSelecionado = document.querySelector('input[name="pagamento"]:checked');
 
-    console.log("clicou no botão");
-console.log(JSON.stringify(carrinho, null, 2));
     if (Object.keys(carrinho).length === 0) {
       alert("Carrinho vazio.");
       return;
@@ -168,132 +166,219 @@ console.log(JSON.stringify(carrinho, null, 2));
       return;
     }
 
-    let totalPedido = 0;
-    let mensagem = `*Novo Pedido*\n\n`;
-    mensagem += `Nome: ${nome}\n`;
-    mensagem += `Endereço: ${endereco}\n\n`;
-    mensagem += `*Pedido:*\n`;
-
-    Object.values(carrinho).forEach(item => {
-      const totalItem = item.preco * item.qtd;
-      totalPedido += totalItem;
-      mensagem += `• ${item.nome}\n`;
-      if (item.sabores && item.sabores.length > 0) {
-    mensagem += `Sabores: ${item.sabores.join(", ")}\n`;
-}
-
-if (item.tamanho) {
-    mensagem += `Tamanho: ${item.tamanho}\n`;
-}
-
-if (item.borda && item.borda !== "Sem borda") {
-    mensagem += `Borda: ${item.borda}\n`;
-}
-
-if (item.adicionais && item.adicionais.length > 0) {
-
-    const adicionaisTexto = item.adicionais.map(a =>
-        typeof a === "string" ? a : a.nome
-    );
-
-    mensagem += `Adicionais: ${adicionaisTexto.join(", ")}\n`;
-}
-
-if (item.marca) {
-    mensagem += `Marca: ${item.marca}\n`;
-}
-
-      mensagem += `${item.qtd}x R$ ${item.preco.toFixed(2)} = R$ ${totalItem.toFixed(2)}\n\n`;
-    });
-
-    mensagem += `Total: R$ ${totalPedido.toFixed(2)}\n`;
-    mensagem += `Pagamento: ${pagamentoSelecionado.value}\n`;
-
-    // 💵 TROCO
+    // TROCO
     if (pagamentoSelecionado.value === "Dinheiro") {
       const trocoSim = document.querySelector('input[name="troco"]:checked');
       if (trocoSim && trocoSim.value === "Sim") {
-        const valorTroco = parseFloat(document.getElementById("valorTrocoInput").value);
-        if (!valorTroco || isNaN(valorTroco)) {
-          alert("Digite o valor para o troco.");
+        const valorTrocoRaw = document.getElementById("valorTrocoInput").value;
+        const valorTroco = parseFloat(valorTrocoRaw);
+
+        if (!valorTrocoRaw || isNaN(valorTroco) || valorTroco <= 0) {
+          alert("Informe um valor de troco válido.");
           return;
         }
+
         if (valorTroco < totalPedido) {
-          alert(`O valor para troco (R$ ${valorTroco.toFixed(2)}) é menor que o total do pedido (R$ ${totalPedido.toFixed(2)}). Por favor, corrija.`);
+          alert(`O valor do troco (R$ ${valorTroco.toFixed(2)}) é menor que o total (R$ ${totalPedido.toFixed(2)}).`);
           return;
         }
-        mensagem += `Troco para: R$ ${valorTroco.toFixed(2)}\n`;
-      } else {
-        mensagem += `Troco: Não precisa\n`;
       }
     }
 
-    const itens = Object.values(carrinho).map(item => ({
-  nome_produto: item.nome,
-  quantidade: item.qtd,
-  preco: item.preco,
-
-  // 🍕 Pizza
-  tamanho: item.tamanho || null,
-  sabores: item.sabores ? item.sabores.join(", ") : null,
-  borda: item.borda || null,
-
-  // 🍔 Hambúrguer
-  adicionais: item.adicionais
-    ? item.adicionais.join(", ")
-    : null,
-
-  // 🥤 Bebida
-  marca: item.marca || null
-}));
+    let totalPedido = 0;
+    const itens = Object.values(carrinho).map(item => {
+      totalPedido += item.preco * item.qtd;
+      return {
+        nome_produto: item.nome,
+        quantidade: item.qtd,
+        preco: item.preco,
+        tamanho: item.tamanho || null,
+        sabores: item.sabores ? item.sabores.join(", ") : null,
+        borda: item.borda || null,
+        adicionais: item.adicionais ? item.adicionais.join(", ") : null,
+        marca: item.marca || null
+      };
+    });
 
     const btnFinalizar = document.getElementById("btnFinalizar");
     btnFinalizar.disabled = true;
     btnFinalizar.textContent = "Enviando...";
+
     const loja = localStorage.getItem("lojaSelecionada");
-    console.log("Loja:", loja);
-    fetch("https://pedido-certo-production.up.railway.app/api/pedidos", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        loja: loja,
-        nome_cliente: nome,
-        endereco: endereco,
-        telefone: "",
-        pagamento: pagamentoSelecionado.value,
-        total: totalPedido,
-        itens: itens
-      })
-    })
-    .then(res => res.json())
-    .then(dados => {
-      console.log("Pedido salvo:", dados);
 
-      if (!dados.sucesso) {
-        alert("Erro ao salvar pedido");
+    try {
+        const res = await fetch("https://pedido-certo-production.up.railway.app/api/pedidos", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                loja,
+                nome_cliente: nome,
+                endereco,
+                telefone: "",
+                pagamento: pagamentoSelecionado.value,
+                total: totalPedido,
+                itens
+            })
+        });
+
+        const dados = await res.json();
+
+        if (!dados.sucesso) {
+            alert("Erro ao salvar pedido.");
+            btnFinalizar.disabled = false;
+            btnFinalizar.textContent = "Finalizar Pedido";
+            return;
+        }
+
+        const pedidoId = dados.pedidoId;
+
+        // SE PIX — busca dados da loja e mostra QR Code
+        if (pagamentoSelecionado.value === "Pix") {
+            const resLoja = await fetch(`https://pedido-certo-production.up.railway.app/api/pedidos/dados-loja/${encodeURIComponent(loja)}`);
+            const dadosLoja = await resLoja.json();
+
+            if (dadosLoja.sucesso) {
+                mostrarQRCode(pedidoId, totalPedido, dadosLoja.dados.chave_pix, dadosLoja.dados.whatsapp);
+            }
+        } else {
+            // CARTÃO OU DINHEIRO — vai direto
+            alert(`Pedido #${pedidoId} confirmado! Acompanhe pelo painel.`);
+            localStorage.removeItem("carrinho");
+            carrinho = {};
+            renderizarCarrinho();
+        }
+
         btnFinalizar.disabled = false;
-        btnFinalizar.textContent = "Finalizar Pedido (WhatsApp)";
-        return;
-      }
+        btnFinalizar.textContent = "Finalizar Pedido";
 
-      const numero = "5584981069732";
-      const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
-      window.open(url, "_blank");
+    } catch (err) {
+        console.error(err);
+        alert("Erro no servidor.");
+        btnFinalizar.disabled = false;
+        btnFinalizar.textContent = "Finalizar Pedido";
+    }
+});
 
-      localStorage.removeItem("carrinho");
-      carrinho = {};
-      renderizarCarrinho();
 
-      btnFinalizar.disabled = false;
-      btnFinalizar.textContent = "Finalizar Pedido (WhatsApp)";
-    })
-    .catch(err => {
-      console.error(err);
-      alert("Erro no servidor");
-      btnFinalizar.disabled = false;
-      btnFinalizar.textContent = "Finalizar Pedido (WhatsApp)";
+
+
+
+
+
+
+function mostrarQRCode(pedidoId, total, chavePix, whatsapp) {
+
+    // Gera payload Pix
+    function gerarPixPayload(chave, valor, nome, cidade) {
+        const valorStr = valor.toFixed(2);
+        const nomeStr = nome.substring(0, 25).padEnd(25, " ");
+        const cidadeStr = cidade.substring(0, 15).padEnd(15, " ");
+
+        const pixKey = `0014BR.GOV.BCB.PIX0136${chave}`;
+        const merchant = `0014BR.GOV.BCB.PIX${String(pixKey.length).padStart(2, "0")}${pixKey}`;
+        const amount = `54${String(valorStr.length).padStart(2, "0")}${valorStr}`;
+
+        let payload = `000201${merchant}5204000053039865${amount}5802BR59${String(nomeStr.trim().length).padStart(2, "0")}${nomeStr.trim()}60${String(cidadeStr.trim().length).padStart(2, "0")}${cidadeStr.trim()}6304`;
+
+        // CRC16
+        function crc16(str) {
+            let crc = 0xFFFF;
+            for (let i = 0; i < str.length; i++) {
+                crc ^= str.charCodeAt(i) << 8;
+                for (let j = 0; j < 8; j++) {
+                    crc = (crc & 0x8000) ? (crc << 1) ^ 0x1021 : crc << 1;
+                }
+            }
+            return (crc & 0xFFFF).toString(16).toUpperCase().padStart(4, "0");
+        }
+
+        return payload + crc16(payload);
+    }
+
+    const payload = gerarPixPayload(chavePix, total, "Pedido Certo", "Brasil");
+
+    // Cria modal do QR Code
+    const modal = document.createElement("div");
+    modal.style.cssText = `
+        position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+        display: flex; align-items: center; justify-content: center;
+        z-index: 99999; padding: 20px;
+    `;
+
+    modal.innerHTML = `
+        <div style="background:#fff; border-radius:20px; padding:24px; max-width:360px; width:100%; text-align:center;">
+            <h2 style="color:#c40000; margin-bottom:4px;">Pagar via Pix</h2>
+            <p style="color:#888; font-size:14px; margin-bottom:16px;">Pedido #${pedidoId}</p>
+
+            <div style="font-size:28px; font-weight:bold; color:#222; margin-bottom:16px;">
+                R$ ${total.toFixed(2)}
+            </div>
+
+            <div id="qrcode-container" style="display:flex; justify-content:center; margin-bottom:16px;"></div>
+
+            <p style="font-size:12px; color:#888; margin-bottom:8px;">Chave Pix:</p>
+            <div style="background:#f5f5f5; border-radius:8px; padding:10px; font-size:14px; font-weight:bold; margin-bottom:16px; word-break:break-all;">
+                ${chavePix}
+            </div>
+
+            <button id="btnComprovante" style="
+                width:100%; padding:14px; background:#25D366;
+                color:#fff; border:none; border-radius:12px;
+                font-size:16px; font-weight:bold; cursor:pointer; margin-bottom:10px;
+            ">
+                Enviar comprovante no WhatsApp
+            </button>
+
+            <button id="btnFecharPix" style="
+                width:100%; padding:12px; background:#f5f5f5;
+                color:#555; border:none; border-radius:12px;
+                font-size:14px; cursor:pointer;
+            ">
+                Fechar
+            </button>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Gera QR Code
+    const script = document.createElement("script");
+    script.src = "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";
+    script.onload = () => {
+        new QRCode(document.getElementById("qrcode-container"), {
+            text: payload,
+            width: 200,
+            height: 200
+        });
+    };
+    document.head.appendChild(script);
+
+    // Botão comprovante
+    document.getElementById("btnComprovante").addEventListener("click", () => {
+        const mensagem = `Comprovante do pedido #${pedidoId} - R$ ${total.toFixed(2)}`;
+        const url = `https://wa.me/${whatsapp}?text=${encodeURIComponent(mensagem)}`;
+        window.open(url, "_blank");
+
+        localStorage.removeItem("carrinho");
+        carrinho = {};
+        renderizarCarrinho();
+        document.body.removeChild(modal);
     });
 
-  });
+    // Botão fechar
+    document.getElementById("btnFecharPix").addEventListener("click", () => {
+        localStorage.removeItem("carrinho");
+        carrinho = {};
+        renderizarCarrinho();
+        document.body.removeChild(modal);
+    });
+}
+
+
+
+
+
+
 
 }); // fecha DOMContentLoaded
+
