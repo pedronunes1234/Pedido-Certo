@@ -201,7 +201,7 @@ const LOJAS = {
         {
           nome: "Pastel de Carne",
           preco: 8.00,
-          img: "imagens/kisabor/pastel.carne.jpg"
+          img: "imagens/kisabor/pastel.carne.png"
         },
         {
           nome: "Pastel de Frango",
@@ -211,12 +211,12 @@ const LOJAS = {
         {
           nome: "Pastel de Queijo",
           preco: 7.00,
-          img: "imagens/kisabor/pastel.queijo.jpg"
+          img: "imagens/kisabor/pastel.queijo.png"
         },
         {
           nome: "Pastel de Pizza",
           preco: 8.00,
-          img: "imagens/kisabor/pastel.pizza.jpg"
+          img: "imagens/kisabor/pastel.pizza.png"
         }
       ],
 
