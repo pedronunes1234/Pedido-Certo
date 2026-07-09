@@ -128,11 +128,12 @@ function renderizarPedidos(pedidos) {
         }
 
         return `
-        <div class="pedido-card status-${statusClass}">
+        <div class="pedido-card status-${statusClass}" id="card-${pedido.id}">
             <div class="pedido-topo">
                 <span class="pedido-id">#${pedido.id}</span>
                 <span class="pedido-status">${pedido.status}</span>
                 <span class="pedido-hora">${hora}</span>
+                <button class="btn-fechar-pedido" onclick="ocultarPedido(${pedido.id})" title="Ocultar pedido">✕</button>
             </div>
             <div class="pedido-info">
                 <p><strong>${pedido.nome_cliente}</strong></p>
@@ -157,4 +158,9 @@ async function atualizarStatus(id, status) {
     } catch (err) {
         alert("Erro ao atualizar status.");
     }
+}
+
+function ocultarPedido(id) {
+    const card = document.getElementById(`card-${id}`);
+    if (card) card.style.display = "none";
 }

@@ -84,38 +84,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
   verificarHorario();
 
-  window.carrinho = {};
+  window.carrinho = JSON.parse(localStorage.getItem("carrinho")) || {};
   const totalEl = document.getElementById("total-carrinho");
+  atualizarTotal();
   const lista = document.getElementById("lista-produtos");
 
   const modal = document.getElementById("modalProduto");
-const modalImagem = document.getElementById("modalImagem");
-const modalNome = document.getElementById("modalNome");
-const modalPrecoBase = document.getElementById("modalPrecoBase");
-const modalTotal = document.getElementById("modalTotal");
-const listaAdicionais = document.getElementById("listaAdicionais");
-const fecharModal = document.getElementById("fecharModal");
-const btnAdicionarCarrinho =document.getElementById("btnAdicionarCarrinho");
+  const modalImagem = document.getElementById("modalImagem");
+  const modalNome = document.getElementById("modalNome");
+  const modalPrecoBase = document.getElementById("modalPrecoBase");
+  const modalTotal = document.getElementById("modalTotal");
+  const listaAdicionais = document.getElementById("listaAdicionais");
+  const fecharModal = document.getElementById("fecharModal");
+  const btnAdicionarCarrinho = document.getElementById("btnAdicionarCarrinho");
 
-if (fecharModal) {
-  fecharModal.addEventListener("click", () => {
-    modal.style.display = "none";
-  });
-}
+  if (fecharModal) {
+    fecharModal.addEventListener("click", () => {
+      modal.style.display = "none";
+    });
+  }
 
-let produtoAtual = null;
-let adicionaisSelecionados = [];
-let totalModal = 0;
+  let produtoAtual = null;
+  let adicionaisSelecionados = [];
+  let totalModal = 0;
 
-let saboresSelecionados = [];
+  let saboresSelecionados = [];
 
-const limiteSabores = {
+  const limiteSabores = {
     P: 2,
     M: 2,
     G: 3
-};
+  };
 
-let tamanhoPizzaPersonalizada = "P";
+  let tamanhoPizzaPersonalizada = "P";
 
   function atualizarTotal() {
     let total = 0;
@@ -138,11 +139,11 @@ let tamanhoPizzaPersonalizada = "P";
     );
   }
 
- function abrirModal(produto) {
+  function abrirModal(produto) {
 
     console.log(produto);
 
-console.log("ABRIU MODAL");
+    console.log("ABRIU MODAL");
     produtoAtual = produto;
     adicionaisSelecionados = [];
 
@@ -153,49 +154,49 @@ console.log("ABRIU MODAL");
 
     if (produto.tipo === "monte-pizza") {
 
-        totalModal = produto.tamanhos.P;
+      totalModal = produto.tamanhos.P;
 
-        modalPrecoBase.textContent =
-            "Preço Base: R$ " +
-            totalModal.toFixed(2);
+      modalPrecoBase.textContent =
+        "Preço Base: R$ " +
+        totalModal.toFixed(2);
 
-        modalTotal.textContent =
-            "R$ " +
-            totalModal.toFixed(2);
+      modalTotal.textContent =
+        "R$ " +
+        totalModal.toFixed(2);
 
-        criarMonteSuaPizza(produto);
+      criarMonteSuaPizza(produto);
 
-        return;
+      return;
     }
 
-  btnAdicionarCarrinho.onclick = () => {
+    btnAdicionarCarrinho.onclick = () => {
 
-        const adicionaisSelecionadosNomes = adicionaisSelecionados
-            .filter(a => a.qtd > 0)
-            .map(a => `${a.nome} x${a.qtd}`);
+      const adicionaisSelecionadosNomes = adicionaisSelecionados
+        .filter(a => a.qtd > 0)
+        .map(a => `${a.nome} x${a.qtd}`);
 
-        const id = Date.now();
+      const id = Date.now();
 
-        carrinho[id] = {
-            nome: produtoAtual.nome,
-            preco: totalModal,
-            qtd: 1,
-            adicionais: adicionaisSelecionadosNomes
-        };
+      carrinho[id] = {
+        nome: produtoAtual.nome,
+        preco: totalModal,
+        qtd: 1,
+        adicionais: adicionaisSelecionadosNomes
+      };
 
-        atualizarTotal();
-        modal.style.display = "none";
+      atualizarTotal();
+      modal.style.display = "none";
     };
 
     totalModal = produto.preco;
 
     modalPrecoBase.textContent =
-        "Preço Base: R$ " +
-        produto.preco.toFixed(2);
+      "Preço Base: R$ " +
+      produto.preco.toFixed(2);
 
     modalTotal.textContent =
-        "R$ " +
-        totalModal.toFixed(2);
+      "R$ " +
+      totalModal.toFixed(2);
 
     listaAdicionais.innerHTML = "";
 
@@ -203,11 +204,11 @@ console.log("ABRIU MODAL");
 
     produto.adicionais.forEach(adicional => {
 
-        const linha = document.createElement("div");
+      const linha = document.createElement("div");
 
-        linha.className = "adicional-item";
+      linha.className = "adicional-item";
 
-        linha.innerHTML = `
+      linha.innerHTML = `
             <div>
                 <strong>${adicional.nome}</strong>
                 <br>
@@ -221,54 +222,54 @@ console.log("ABRIU MODAL");
             </div>
         `;
 
-        const qtdEl = linha.querySelector("span");
-        const btnMais = linha.querySelector(".btn-maior");
-        const btnMenos = linha.querySelector(".btn-menor");
+      const qtdEl = linha.querySelector("span");
+      const btnMais = linha.querySelector(".btn-maior");
+      const btnMenos = linha.querySelector(".btn-menor");
 
-        let qtd = 0;
+      let qtd = 0;
 
-        btnMais.addEventListener("click", () => {
+      btnMais.addEventListener("click", () => {
 
-            qtd++;
+        qtd++;
 
-            qtdEl.textContent = qtd;
+        qtdEl.textContent = qtd;
 
-            totalModal += adicional.preco;
+        totalModal += adicional.preco;
 
-            modalTotal.textContent =
-                "R$ " +
-                totalModal.toFixed(2);
+        modalTotal.textContent =
+          "R$ " +
+          totalModal.toFixed(2);
 
-                 // Rastrear adicional
-            const existente = adicionaisSelecionados.find(a => a.nome === adicional.nome);
-            if (existente) existente.qtd = qtd;
-            else adicionaisSelecionados.push({ nome: adicional.nome, qtd });
-        });
+        // Rastrear adicional
+        const existente = adicionaisSelecionados.find(a => a.nome === adicional.nome);
+        if (existente) existente.qtd = qtd;
+        else adicionaisSelecionados.push({ nome: adicional.nome, qtd });
+      });
 
-        btnMenos.addEventListener("click", () => {
+      btnMenos.addEventListener("click", () => {
 
-            if (qtd === 0) return;
+        if (qtd === 0) return;
 
-            qtd--;
+        qtd--;
 
-            qtdEl.textContent = qtd;
+        qtdEl.textContent = qtd;
 
-            totalModal -= adicional.preco;
+        totalModal -= adicional.preco;
 
-            modalTotal.textContent =
-                "R$ " +
-                totalModal.toFixed(2);
+        modalTotal.textContent =
+          "R$ " +
+          totalModal.toFixed(2);
 
-                // Rastrear adicional
-            const existente = adicionaisSelecionados.find(a => a.nome === adicional.nome);
-            if (existente) existente.qtd = qtd;
-        });
+        // Rastrear adicional
+        const existente = adicionaisSelecionados.find(a => a.nome === adicional.nome);
+        if (existente) existente.qtd = qtd;
+      });
 
-        listaAdicionais.appendChild(linha);
+      listaAdicionais.appendChild(linha);
     });
-}
+  }
 
-function abrirModalBorda(produto, tamanhoInicial, precoInicial) {
+  function abrirModalBorda(produto, tamanhoInicial, precoInicial) {
 
     produtoAtual = produto;
 
@@ -293,10 +294,10 @@ function abrirModalBorda(produto, tamanhoInicial, precoInicial) {
 
     // SEÇÃO DE BORDAS
     const opcoesBordas = [
-        { nome: "Sem borda", preco: 0 },
-        { nome: "Borda de Catupiry", preco: 5 },
-        { nome: "Borda de Cheddar", preco: 5 },
-        { nome: "Borda de Chocolate", preco: 6 }
+      { nome: "Sem borda", preco: 0 },
+      { nome: "Borda de Catupiry", preco: 5 },
+      { nome: "Borda de Cheddar", preco: 5 },
+      { nome: "Borda de Chocolate", preco: 6 }
     ];
 
     const secaoBordas = document.createElement("div");
@@ -305,23 +306,23 @@ function abrirModalBorda(produto, tamanhoInicial, precoInicial) {
     secaoBordas.innerHTML = `<p style="font-weight:bold; font-size:16px; margin-bottom:10px; color:#222;">Escolha a borda:</p>`;
 
     opcoesBordas.forEach(borda => {
-        const btn = document.createElement("button");
-        btn.className = "btn-borda" + (borda.nome === "Sem borda" ? " ativo" : "");
-        btn.textContent = borda.preco === 0
-            ? borda.nome
-            : `${borda.nome} (+R$ ${borda.preco.toFixed(2)})`;
+      const btn = document.createElement("button");
+      btn.className = "btn-borda" + (borda.nome === "Sem borda" ? " ativo" : "");
+      btn.textContent = borda.preco === 0
+        ? borda.nome
+        : `${borda.nome} (+R$ ${borda.preco.toFixed(2)})`;
 
-        btn.addEventListener("click", () => {
-            secaoBordas.querySelectorAll(".btn-borda").forEach(b => b.classList.remove("ativo"));
-            btn.classList.add("ativo");
-            basePrice -= precoExtraBorda;
-            precoExtraBorda = borda.preco;
-            basePrice += precoExtraBorda;
-            bordaSelecionada = borda;
-            modalTotal.textContent = "R$ " + basePrice.toFixed(2);
-        });
+      btn.addEventListener("click", () => {
+        secaoBordas.querySelectorAll(".btn-borda").forEach(b => b.classList.remove("ativo"));
+        btn.classList.add("ativo");
+        basePrice -= precoExtraBorda;
+        precoExtraBorda = borda.preco;
+        basePrice += precoExtraBorda;
+        bordaSelecionada = borda;
+        modalTotal.textContent = "R$ " + basePrice.toFixed(2);
+      });
 
-        secaoBordas.appendChild(btn);
+      secaoBordas.appendChild(btn);
     });
 
     listaAdicionais.before(secaoBordas);
@@ -332,39 +333,39 @@ function abrirModalBorda(produto, tamanhoInicial, precoInicial) {
     if (btnAtivo) btnAtivo.classList.add("ativo");
 
     modal.querySelectorAll(".btn-tamanho").forEach(btn => {
-        btn.replaceWith(btn.cloneNode(true)); // remove listeners antigos
+      btn.replaceWith(btn.cloneNode(true)); // remove listeners antigos
     });
 
     modal.querySelectorAll(".btn-tamanho").forEach(btn => {
-        btn.addEventListener("click", () => {
-            modal.querySelectorAll(".btn-tamanho").forEach(b => b.classList.remove("ativo"));
-            btn.classList.add("ativo");
+      btn.addEventListener("click", () => {
+        modal.querySelectorAll(".btn-tamanho").forEach(b => b.classList.remove("ativo"));
+        btn.classList.add("ativo");
 
-            tamanho = btn.dataset.size;
-            basePrice = produto.tamanhos[tamanho] + precoExtraBorda;
+        tamanho = btn.dataset.size;
+        basePrice = produto.tamanhos[tamanho] + precoExtraBorda;
 
-            modalPrecoBase.textContent = "Tamanho: " + tamanho;
-            modalTotal.textContent = "R$ " + basePrice.toFixed(2);
-        });
+        modalPrecoBase.textContent = "Tamanho: " + tamanho;
+        modalTotal.textContent = "R$ " + basePrice.toFixed(2);
+      });
     });
 
     // BOTÃO ADICIONAR
     btnAdicionarCarrinho.onclick = () => {
 
-        const id = Date.now();
+      const id = Date.now();
 
-        carrinho[id] = {
-            nome: `${produto.nome} (${tamanho})`,
-            preco: basePrice,
-            qtd: 1,
-            tamanho: tamanho,
-            borda: bordaSelecionada.nome
-        };
+      carrinho[id] = {
+        nome: `${produto.nome} (${tamanho})`,
+        preco: basePrice,
+        qtd: 1,
+        tamanho: tamanho,
+        borda: bordaSelecionada.nome
+      };
 
-        atualizarTotal();
-        modal.style.display = "none";
+      atualizarTotal();
+      modal.style.display = "none";
     };
-}
+  }
 
   function criarMonteSuaPizza(produto) {
 
@@ -382,17 +383,17 @@ function abrirModalBorda(produto, tamanhoInicial, precoInicial) {
     let bordaSelecionada = { nome: "Sem borda", preco: 0 };
 
     const limiteSabores = {
-        P: 2,
-        M: 2,
-        G: 3
+      P: 2,
+      M: 2,
+      G: 3
     };
 
     // BORDAS RECHEADAS
     const opcoesBordas = [
-        { nome: "Sem borda", preco: 0 },
-        { nome: "Borda de Catupiry", preco: 5 },
-        { nome: "Borda de Cheddar", preco: 5 },
-        { nome: "Borda de Chocolate", preco: 6 }
+      { nome: "Sem borda", preco: 0 },
+      { nome: "Borda de Catupiry", preco: 5 },
+      { nome: "Borda de Cheddar", preco: 5 },
+      { nome: "Borda de Chocolate", preco: 6 }
     ];
 
     const bordaExistente = document.getElementById("secaoBordas");
@@ -404,21 +405,21 @@ function abrirModalBorda(produto, tamanhoInicial, precoInicial) {
     secaoBordas.innerHTML = `<p style="font-weight:bold; font-size:16px; margin-bottom:10px; color:#222;">Escolha a borda:</p>`;
 
     opcoesBordas.forEach(borda => {
-        const btn = document.createElement("button");
-        btn.className = "btn-borda" + (borda.nome === "Sem borda" ? " ativo" : "");
-        btn.textContent = borda.preco === 0
-            ? borda.nome
-            : `${borda.nome} (+R$ ${borda.preco.toFixed(2)})`;
-        btn.addEventListener("click", () => {
-            secaoBordas.querySelectorAll(".btn-borda").forEach(b => b.classList.remove("ativo"));
-            btn.classList.add("ativo");
-            basePrice -= precoExtraBorda;
-            precoExtraBorda = borda.preco;
-            basePrice += precoExtraBorda;
-            bordaSelecionada = borda;
-            modalTotal.textContent = "R$ " + basePrice.toFixed(2);
-        });
-        secaoBordas.appendChild(btn);
+      const btn = document.createElement("button");
+      btn.className = "btn-borda" + (borda.nome === "Sem borda" ? " ativo" : "");
+      btn.textContent = borda.preco === 0
+        ? borda.nome
+        : `${borda.nome} (+R$ ${borda.preco.toFixed(2)})`;
+      btn.addEventListener("click", () => {
+        secaoBordas.querySelectorAll(".btn-borda").forEach(b => b.classList.remove("ativo"));
+        btn.classList.add("ativo");
+        basePrice -= precoExtraBorda;
+        precoExtraBorda = borda.preco;
+        basePrice += precoExtraBorda;
+        bordaSelecionada = borda;
+        modalTotal.textContent = "R$ " + basePrice.toFixed(2);
+      });
+      secaoBordas.appendChild(btn);
     });
 
     listaSabores.before(secaoBordas);
@@ -439,38 +440,38 @@ function abrirModalBorda(produto, tamanhoInicial, precoInicial) {
 
     botoesTamanho.forEach(btn => {
 
-        // remove listener antigo (IMPORTANTE para não duplicar)
-        btn.replaceWith(btn.cloneNode(true));
+      // remove listener antigo (IMPORTANTE para não duplicar)
+      btn.replaceWith(btn.cloneNode(true));
     });
 
     modal.querySelectorAll(".btn-tamanho").forEach(btn => {
 
-        btn.addEventListener("click", () => {
+      btn.addEventListener("click", () => {
 
-            modal.querySelectorAll(".btn-tamanho")
-                .forEach(b => b.classList.remove("ativo"));
+        modal.querySelectorAll(".btn-tamanho")
+          .forEach(b => b.classList.remove("ativo"));
 
-            btn.classList.add("ativo");
+        btn.classList.add("ativo");
 
-            tamanho = btn.dataset.size;
+        tamanho = btn.dataset.size;
 
-            saboresSelecionados = [];
+        saboresSelecionados = [];
 
-            listaSabores.querySelectorAll("input")
-                .forEach(i => i.checked = false);
+        listaSabores.querySelectorAll("input")
+          .forEach(i => i.checked = false);
 
-            basePrice = produto.tamanhos[tamanho];
-            total = basePrice;
+        basePrice = produto.tamanhos[tamanho];
+        total = basePrice;
 
-            modalPrecoBase.textContent =
-                "Preço Base: R$ " + basePrice.toFixed(2);
+        modalPrecoBase.textContent =
+          "Preço Base: R$ " + basePrice.toFixed(2);
 
-            modalTotal.textContent =
-                "R$ " + total.toFixed(2);
+        modalTotal.textContent =
+          "R$ " + total.toFixed(2);
 
-            contador.textContent =
-                `Selecionados: 0/${limiteSabores[tamanho]}`;
-        });
+        contador.textContent =
+          `Selecionados: 0/${limiteSabores[tamanho]}`;
+      });
     });
 
     // ===============================
@@ -478,39 +479,39 @@ function abrirModalBorda(produto, tamanhoInicial, precoInicial) {
     // ===============================
     produto.sabores.forEach(sabor => {
 
-        const item = document.createElement("div");
-        item.className = "item-sabor-pizza";
+      const item = document.createElement("div");
+      item.className = "item-sabor-pizza";
 
-        item.innerHTML = `
+      item.innerHTML = `
             <label class="label-sabor">
                 <span class="check-custom"></span>
                 <span class="nome-sabor">${sabor}</span>
             </label>
         `;
 
-        let marcado = false;
+      let marcado = false;
 
-        item.addEventListener("click", () => {
-            const limite = limiteSabores[tamanho];
+      item.addEventListener("click", () => {
+        const limite = limiteSabores[tamanho];
 
-            if (!marcado) {
-                if (saboresSelecionados.length >= limite) {
-                    alert(`Máximo de ${limite} sabores para tamanho ${tamanho}`);
-                    return;
-                }
-                marcado = true;
-                saboresSelecionados.push(sabor);
-                item.querySelector(".check-custom").classList.add("marcado");
-            } else {
-                marcado = false;
-                saboresSelecionados = saboresSelecionados.filter(s => s !== sabor);
-                item.querySelector(".check-custom").classList.remove("marcado");
-            }
+        if (!marcado) {
+          if (saboresSelecionados.length >= limite) {
+            alert(`Máximo de ${limite} sabores para tamanho ${tamanho}`);
+            return;
+          }
+          marcado = true;
+          saboresSelecionados.push(sabor);
+          item.querySelector(".check-custom").classList.add("marcado");
+        } else {
+          marcado = false;
+          saboresSelecionados = saboresSelecionados.filter(s => s !== sabor);
+          item.querySelector(".check-custom").classList.remove("marcado");
+        }
 
-            contador.textContent = `${saboresSelecionados.length}/${limite}`;
-        });
+        contador.textContent = `${saboresSelecionados.length}/${limite}`;
+      });
 
-        listaSabores.appendChild(item);
+      listaSabores.appendChild(item);
     });
 
     // ===============================
@@ -518,34 +519,34 @@ function abrirModalBorda(produto, tamanhoInicial, precoInicial) {
     // ===============================
     btnAdicionarCarrinho.onclick = () => {
 
-        if (saboresSelecionados.length === 0) {
-            alert("Escolha pelo menos 1 sabor");
-            return;
-        }
+      if (saboresSelecionados.length === 0) {
+        alert("Escolha pelo menos 1 sabor");
+        return;
+      }
 
-        const id = gerarId(produto, tamanho, "pizza") + "-" + Date.now();
+      const id = gerarId(produto, tamanho, "pizza") + "-" + Date.now();
 
-        carrinho[id] = {
-            nome: `${produto.nome} (${tamanho})`,
-            preco: basePrice,
-            qtd: 1,
-            tamanho: tamanho,
-            sabores: [...saboresSelecionados],
-            borda: bordaSelecionada.nome
-        };
+      carrinho[id] = {
+        nome: `${produto.nome} (${tamanho})`,
+        preco: basePrice,
+        qtd: 1,
+        tamanho: tamanho,
+        sabores: [...saboresSelecionados],
+        borda: bordaSelecionada.nome
+      };
 
-        atualizarTotal();
+      atualizarTotal();
 
-        modal.style.display = "none";
+      modal.style.display = "none";
     };
-}
+  }
 
   function renderizarCategoria(categoria) {
 
     lista.innerHTML = "";
 
     loja.categorias[categoria].forEach(produto => {
-       
+
       console.log(produto);
 
       const card = document.createElement("div");
@@ -583,20 +584,16 @@ function abrirModalBorda(produto, tamanhoInicial, precoInicial) {
           <h3>${produto.nome}</h3>
 
           ${produto.descricao
-            ? `<p class="descricao-produto">${produto.descricao}</p>`
-            : ""}
+          ? `<p class="descricao-produto">${produto.descricao}</p>`
+          : ""}
 
           <p class="preco-produto" id="preco-${baseId}">
-            R$ ${precoAtual.toFixed(2)}
-          </p>
-
-          ${produto.tamanhos ? `
-            <div class="tamanhos">
-              <button class="btn-tamanho ${tamanhoSelecionado === "P" ? "ativo" : ""}" data-size="P">P</button>
-              <button class="btn-tamanho ${tamanhoSelecionado === "M" ? "ativo" : ""}" data-size="M">M</button>
-              <button class="btn-tamanho ${tamanhoSelecionado === "G" ? "ativo" : ""}" data-size="G">G</button>
-            </div>
-          ` : ""}
+  ${produto.tamanhos
+    ? Object.entries(produto.tamanhos).map(([tam, preco]) =>
+        `<span class="preco-tamanho">${tam}: R$ ${preco.toFixed(2)}</span>`
+      ).join(" | ")
+    : `R$ ${precoAtual.toFixed(2)}`}
+</p>
 
           ${produto.marcas ? `
             <div class="marcas">
@@ -611,45 +608,44 @@ function abrirModalBorda(produto, tamanhoInicial, precoInicial) {
         </div>
 
         <div class="controle-qtd">
-          ${produto.tipo === "monte-pizza"
-            ? `<button class="btn-qtd btn-qtd-pizza" id="mais-${baseId}">+</button>`
-            : `
-              <button class="btn-qtd" id="menos-${baseId}">−</button>
-              <span class="qtd-numero" id="qtd-${baseId}">0</span>
-              <button class="btn-qtd" id="mais-${baseId}">+</button>
-            `}
-        </div>
+  ${produto.tipo === "monte-pizza" || produto.tamanhos || produto.adicionais
+    ? `<button class="btn-qtd btn-qtd-pizza" id="mais-${baseId}">+</button>`
+    : `
+      <button class="btn-qtd" id="menos-${baseId}">−</button>
+      <span class="qtd-numero" id="qtd-${baseId}">0</span>
+      <button class="btn-qtd" id="mais-${baseId}">+</button>
+    `}
+</div>
       `;
 
       lista.appendChild(card);
       console.log(
-    "TIPO:",
-    produto.nome,
-    produto.tipo
-);
+        "TIPO:",
+        produto.nome,
+        produto.tipo
+      );
 
-if (
-    produto.adicionais ||
-    produto.tipo === "monte-pizza"
-)
-{
+      if (
+        produto.adicionais ||
+        produto.tipo === "monte-pizza"
+      ) {
 
-    card.querySelector(".produto-img")
-        .addEventListener(
+        card.querySelector(".produto-img")
+          .addEventListener(
             "click",
             () => {
 
-                console.log(
-                    "CLICOU:",
-                    produto.nome
-                );
+              console.log(
+                "CLICOU:",
+                produto.nome
+              );
 
-                abrirModal(produto);
+              abrirModal(produto);
 
             }
-        );
+          );
 
-}
+      }
       const qtdEl = card.querySelector(`#qtd-${baseId}`);
       const precoEl = card.querySelector(`#preco-${baseId}`);
       const imgEl = card.querySelector(`#img-${baseId}`);
@@ -672,34 +668,33 @@ if (
 
             tamanhoSelecionado = btn.dataset.size;
 
-            if(produto.tipo === "monte-pizza"){
+            if (produto.tipo === "monte-pizza") {
 
-    tamanhoPizzaPersonalizada =
-    tamanhoSelecionado;
+              tamanhoPizzaPersonalizada =
+                tamanhoSelecionado;
 
-    const contador =
-    document.getElementById(
-        "contadorSabores"
-    );
+              const contador =
+                document.getElementById(
+                  "contadorSabores"
+                );
 
-    if(contador){
+              if (contador) {
 
-        contador.textContent =
-        `Selecionados:
-        ${saboresSelecionados.length}/${
-            limiteSabores[
-                tamanhoPizzaPersonalizada
-            ]
-        }`;
-    }
-}
+                contador.textContent =
+                  `Selecionados:
+        ${saboresSelecionados.length}/${limiteSabores[
+                  tamanhoPizzaPersonalizada
+                  ]
+                  }`;
+              }
+            }
 
-            if(produto.tipo === "monte-pizza"){
+            if (produto.tipo === "monte-pizza") {
 
-    tamanhoPizzaPersonalizada =
-    tamanhoSelecionado;
+              tamanhoPizzaPersonalizada =
+                tamanhoSelecionado;
 
-}
+            }
             precoAtual = produto.tamanhos[tamanhoSelecionado];
 
             precoEl.textContent = "R$ " + precoAtual.toFixed(2);
@@ -741,47 +736,47 @@ if (
       }
 
       // BOTÃO +
-card.querySelector(`#mais-${baseId}`).addEventListener("click", (e) => {
+      card.querySelector(`#mais-${baseId}`).addEventListener("click", (e) => {
 
-  e.stopPropagation();
+        e.stopPropagation();
 
-  // Se o produto possui adicionais (mas NÃO monte-pizza)
-  // Se o produto possui adicionais OU é monte-pizza, abre o modal
-  if (produto.adicionais || produto.tipo === "monte-pizza") {
-    abrirModal(produto);
-    return;
-  }
+        // Se o produto possui adicionais (mas NÃO monte-pizza)
+        // Se o produto possui adicionais OU é monte-pizza, abre o modal
+        if (produto.adicionais || produto.tipo === "monte-pizza") {
+          abrirModal(produto);
+          return;
+        }
 
-  // Pizzas com tamanhos mas sem adicionais (calabresa, mussarela, frango)
-  if (produto.tamanhos && !produto.tipo) {
-    abrirModalBorda(produto, tamanhoSelecionado, precoAtual);
-    return;
-  }
+        // Pizzas com tamanhos mas sem adicionais (calabresa, mussarela, frango)
+        if (produto.tamanhos && !produto.tipo) {
+          abrirModalBorda(produto, tamanhoSelecionado, precoAtual);
+          return;
+        }
 
-  const idFinal = gerarId(
-    produto,
-    tamanhoSelecionado,
-    marcaSelecionada
-  );
+        const idFinal = gerarId(
+          produto,
+          tamanhoSelecionado,
+          marcaSelecionada
+        );
 
-  if (!carrinho[idFinal]) {
-    carrinho[idFinal] = {
-      nome: produto.nome,
-      preco: precoAtual,
-      tamanho: tamanhoSelecionado,
-      marca: marcaSelecionada,
-      qtd: 0
-    };
-  }
+        if (!carrinho[idFinal]) {
+          carrinho[idFinal] = {
+            nome: produto.nome,
+            preco: precoAtual,
+            tamanho: tamanhoSelecionado,
+            marca: marcaSelecionada,
+            qtd: 0
+          };
+        }
 
-  carrinho[idFinal].preco = precoAtual;
-  carrinho[idFinal].qtd++;
+        carrinho[idFinal].preco = precoAtual;
+        carrinho[idFinal].qtd++;
 
-  qtdEl.textContent = carrinho[idFinal].qtd;
+        qtdEl.textContent = carrinho[idFinal].qtd;
 
-  atualizarTotal();
+        atualizarTotal();
 
-});
+      });
 
       // BOTÃO -
       const btnMenosCard = card.querySelector(`#menos-${baseId}`);

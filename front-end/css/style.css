@@ -1020,3 +1020,9 @@ html, body {
     margin-top: 8px;
     display: block;
 }
+
+.preco-tamanho {
+    font-size: 13px;
+    font-weight: bold;
+    color: #c40000;
+}
