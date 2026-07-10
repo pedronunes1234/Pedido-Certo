@@ -232,14 +232,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const pedidoId = dados.pedidoId;
 
-        // SE PIX — busca dados da loja e mostra QR Code
+    // SE PIX — gera QR Code via Mercado Pago
         if (pagamentoSelecionado.value === "Pix") {
-            const resLoja = await fetch(`https://pedido-certo-production.up.railway.app/api/pedidos/dados-loja/${encodeURIComponent(loja)}`);
-            const dadosLoja = await resLoja.json();
+            const resPix = await fetch("https://pedido-certo-production.up.railway.app/api/pagamento/pix", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    total: totalPedido,
+                    pedidoId: pedidoId,
+                    nomeCliente: nome,
+                    email: ""
+                })
+            });
 
-            if (dadosLoja.sucesso) {
-                mostrarQRCode(pedidoId, totalPedido, dadosLoja.dados.chave_pix, dadosLoja.dados.whatsapp);
+            const dadosPix = await resPix.json();
+
+            if (dadosPix.sucesso) {
+                mostrarQRCodeMP(pedidoId, totalPedido, dadosPix.qrCode, dadosPix.qrCodeBase64, loja);
+            } else {
+                alert("Erro ao gerar QR Code Pix.");
+                btnFinalizar.disabled = false;
+                btnFinalizar.textContent = "Finalizar Pedido";
             }
+        
         } else {
             // CARTÃO OU DINHEIRO — vai direto
             alert(`Pedido #${pedidoId} confirmado! Acompanhe pelo painel.`);
@@ -265,39 +280,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-
-function mostrarQRCode(pedidoId, total, chavePix, whatsapp) {
-
-    // Gera payload Pix
-    function gerarPixPayload(chave, valor, nome, cidade) {
-        const valorStr = valor.toFixed(2);
-        const nomeStr = nome.substring(0, 25).padEnd(25, " ");
-        const cidadeStr = cidade.substring(0, 15).padEnd(15, " ");
-
-        const pixKey = `0014BR.GOV.BCB.PIX0136${chave}`;
-        const merchant = `0014BR.GOV.BCB.PIX${String(pixKey.length).padStart(2, "0")}${pixKey}`;
-        const amount = `54${String(valorStr.length).padStart(2, "0")}${valorStr}`;
-
-        let payload = `000201${merchant}5204000053039865${amount}5802BR59${String(nomeStr.trim().length).padStart(2, "0")}${nomeStr.trim()}60${String(cidadeStr.trim().length).padStart(2, "0")}${cidadeStr.trim()}6304`;
-
-        // CRC16
-        function crc16(str) {
-            let crc = 0xFFFF;
-            for (let i = 0; i < str.length; i++) {
-                crc ^= str.charCodeAt(i) << 8;
-                for (let j = 0; j < 8; j++) {
-                    crc = (crc & 0x8000) ? (crc << 1) ^ 0x1021 : crc << 1;
-                }
-            }
-            return (crc & 0xFFFF).toString(16).toUpperCase().padStart(4, "0");
-        }
-
-        return payload + crc16(payload);
-    }
-
-    const payload = gerarPixPayload(chavePix, total, "Pedido Certo", "Brasil");
-
-    // Cria modal do QR Code
+function mostrarQRCodeMP(pedidoId, total, qrCode, qrCodeBase64, loja) {
     const modal = document.createElement("div");
     modal.style.cssText = `
         position: fixed; inset: 0; background: rgba(0,0,0,0.8);
@@ -314,66 +297,52 @@ function mostrarQRCode(pedidoId, total, chavePix, whatsapp) {
                 R$ ${total.toFixed(2)}
             </div>
 
-            <div id="qrcode-container" style="display:flex; justify-content:center; margin-bottom:16px;"></div>
+            <img src="data:image/png;base64,${qrCodeBase64}" 
+                 style="width:200px; height:200px; margin-bottom:16px;">
 
-            <p style="font-size:12px; color:#888; margin-bottom:8px;">Chave Pix:</p>
-            <div style="background:#f5f5f5; border-radius:8px; padding:10px; font-size:14px; font-weight:bold; margin-bottom:16px; word-break:break-all;">
-                ${chavePix}
+            <p style="font-size:12px; color:#888; margin-bottom:6px;">Ou copie o código:</p>
+            <div style="background:#f5f5f5; border-radius:8px; padding:10px; font-size:11px; 
+                        margin-bottom:8px; word-break:break-all; text-align:left;">
+                ${qrCode}
             </div>
 
-            <button id="btnComprovante" style="
-                width:100%; padding:14px; background:#25D366;
+            <button id="btnCopiarPix" style="
+                width:100%; padding:12px; background:#f5f5f5;
+                color:#333; border:none; border-radius:12px;
+                font-size:14px; font-weight:bold; cursor:pointer; margin-bottom:10px;
+            ">
+                📋 Copiar código Pix
+            </button>
+
+            <p style="font-size:12px; color:#888; margin-bottom:10px;">
+                Após pagar, clique no botão abaixo para confirmar.
+            </p>
+
+            <button id="btnConfirmarPix" style="
+                width:100%; padding:14px; background:#c40000;
                 color:#fff; border:none; border-radius:12px;
                 font-size:16px; font-weight:bold; cursor:pointer; margin-bottom:10px;
             ">
-                Enviar comprovante no WhatsApp
-            </button>
-
-            <button id="btnFecharPix" style="
-                width:100%; padding:12px; background:#f5f5f5;
-                color:#555; border:none; border-radius:12px;
-                font-size:14px; cursor:pointer;
-            ">
-                Fechar
+                ✅ Já paguei
             </button>
         </div>
     `;
 
     document.body.appendChild(modal);
 
-    // Gera QR Code
-    const script = document.createElement("script");
-    script.src = "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";
-    script.onload = () => {
-        new QRCode(document.getElementById("qrcode-container"), {
-            text: payload,
-            width: 200,
-            height: 200
-        });
-    };
-    document.head.appendChild(script);
-
-    // Botão comprovante
-    document.getElementById("btnComprovante").addEventListener("click", () => {
-        const mensagem = `Comprovante do pedido #${pedidoId} - R$ ${total.toFixed(2)}`;
-        const url = `https://wa.me/${whatsapp}?text=${encodeURIComponent(mensagem)}`;
-        window.open(url, "_blank");
-
-        localStorage.removeItem("carrinho");
-        carrinho = {};
-        renderizarCarrinho();
-        document.body.removeChild(modal);
+    document.getElementById("btnCopiarPix").addEventListener("click", () => {
+        navigator.clipboard.writeText(qrCode);
+        document.getElementById("btnCopiarPix").textContent = "✅ Código copiado!";
     });
 
-    // Botão fechar
-    document.getElementById("btnFecharPix").addEventListener("click", () => {
+    document.getElementById("btnConfirmarPix").addEventListener("click", () => {
         localStorage.removeItem("carrinho");
         carrinho = {};
         renderizarCarrinho();
         document.body.removeChild(modal);
+        alert(`Pedido #${pedidoId} confirmado! Aguarde a confirmação do pagamento.`);
     });
 }
-
 
 
 
