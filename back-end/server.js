@@ -29,6 +29,8 @@ const usuarioRoutes = require("./routes/usuarioRoutes");
 // Rotas da API
 app.use("/api/pedidos", pedidoRoutes);
 app.use("/api/usuarios", usuarioRoutes);
+const pagamentoRoutes = require("./routes/pagamentoRoutes");
+app.use("/api/pagamento", pagamentoRoutes);
 
 // Página inicial
 app.get("/", (req, res) => {
