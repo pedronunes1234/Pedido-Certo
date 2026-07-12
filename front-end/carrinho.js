@@ -42,6 +42,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (radio && radio.value === "Dinheiro") {
         trocoBox.style.display = "block";
+
+        const trocoNao = document.querySelector('input[name="troco"][value="Não"]');
+        trocoNao.checked = true;
+        document.querySelectorAll('input[name="troco"]').forEach(r => {
+          r.closest(".opcao").classList.remove("selecionado");
+        });
+        trocoNao.closest(".opcao").classList.add("selecionado");
+        valorTrocoBox.style.display = "none";
+
       } else {
         trocoBox.style.display = "none";
         valorTrocoBox.style.display = "none";
@@ -166,6 +175,21 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    let totalPedido = 0;
+    const itens = Object.values(carrinho).map(item => {
+      totalPedido += item.preco * item.qtd;
+      return {
+        nome_produto: item.nome,
+        quantidade: item.qtd,
+        preco: item.preco,
+        tamanho: item.tamanho || null,
+        sabores: item.sabores ? item.sabores.join(", ") : null,
+        borda: item.borda || null,
+        adicionais: item.adicionais ? item.adicionais.join(", ") : null,
+        marca: item.marca || null
+      };
+    });
+
     // TROCO
     if (pagamentoSelecionado.value === "Dinheiro") {
       const trocoSim = document.querySelector('input[name="troco"]:checked');
@@ -185,21 +209,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    let totalPedido = 0;
-    const itens = Object.values(carrinho).map(item => {
-      totalPedido += item.preco * item.qtd;
-      return {
-        nome_produto: item.nome,
-        quantidade: item.qtd,
-        preco: item.preco,
-        tamanho: item.tamanho || null,
-        sabores: item.sabores ? item.sabores.join(", ") : null,
-        borda: item.borda || null,
-        adicionais: item.adicionais ? item.adicionais.join(", ") : null,
-        marca: item.marca || null
-      };
-    });
-
     const btnFinalizar = document.getElementById("btnFinalizar");
     btnFinalizar.disabled = true;
     btnFinalizar.textContent = "Enviando...";
@@ -207,80 +216,93 @@ document.addEventListener("DOMContentLoaded", () => {
     const loja = localStorage.getItem("lojaSelecionada");
 
     try {
-        const res = await fetch("https://pedido-certo-production.up.railway.app/api/pedidos", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                loja,
-                nome_cliente: nome,
-                endereco,
-                telefone: "",
-                pagamento: pagamentoSelecionado.value,
-                total: totalPedido,
-                itens
-            })
+
+      // SE PIX — gera QR Code via Mercado Pago e salva pedido no controller
+      if (pagamentoSelecionado.value === "Pix") {
+        const resPix = await fetch("https://pedido-certo-production.up.railway.app/api/pagamento/pix", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            total: totalPedido,
+            nomeCliente: nome,
+            email: "",
+            dadosPedido: {
+              loja,
+              nome_cliente: nome,
+              endereco,
+              pagamento: "Pix",
+              total: totalPedido,
+              itens
+            }
+          })
         });
 
-        const dados = await res.json();
+        const dadosPix = await resPix.json();
 
-        if (!dados.sucesso) {
-            alert("Erro ao salvar pedido.");
-            btnFinalizar.disabled = false;
-            btnFinalizar.textContent = "Finalizar Pedido";
-            return;
-        }
-
-        const pedidoId = dados.pedidoId;
-
-    // SE PIX — gera QR Code via Mercado Pago
-        if (pagamentoSelecionado.value === "Pix") {
-            const resPix = await fetch("https://pedido-certo-production.up.railway.app/api/pagamento/pix", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    total: totalPedido,
-                    pedidoId: pedidoId,
-                    nomeCliente: nome,
-                    email: ""
-                })
-            });
-
-            const dadosPix = await resPix.json();
-
-            if (dadosPix.sucesso) {
-                mostrarQRCodeMP(pedidoId, totalPedido, dadosPix.qrCode, dadosPix.qrCodeBase64, loja);
-            } else {
-                alert("Erro ao gerar QR Code Pix.");
-                btnFinalizar.disabled = false;
-                btnFinalizar.textContent = "Finalizar Pedido";
-            }
-        
+        if (dadosPix.sucesso) {
+          mostrarQRCodeMP(dadosPix.pedidoId, totalPedido, dadosPix.qrCode, dadosPix.qrCodeBase64, loja);
         } else {
-            // CARTÃO OU DINHEIRO — vai direto
-            alert(`Pedido #${pedidoId} confirmado! Acompanhe pelo painel.`);
-            localStorage.removeItem("carrinho");
-            carrinho = {};
-            renderizarCarrinho();
+          alert("Erro ao gerar QR Code Pix.");
         }
 
         btnFinalizar.disabled = false;
         btnFinalizar.textContent = "Finalizar Pedido";
+        return;
+      }
+
+      // CARTÃO OU DINHEIRO — salva pedido normalmente
+      const res = await fetch("https://pedido-certo-production.up.railway.app/api/pedidos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          loja,
+          nome_cliente: nome,
+          endereco,
+          telefone: "",
+          pagamento: pagamentoSelecionado.value,
+          total: totalPedido,
+          itens
+        })
+      });
+
+      const dados = await res.json();
+
+      if (!dados.sucesso) {
+        alert("Erro ao salvar pedido.");
+        btnFinalizar.disabled = false;
+        btnFinalizar.textContent = "Finalizar Pedido";
+        return;
+      }
+
+      const pedidoId = dados.pedidoId;
+
+      // TROCO NA MENSAGEM
+      let msgTroco = "";
+      if (pagamentoSelecionado.value === "Dinheiro") {
+        const trocoSim = document.querySelector('input[name="troco"]:checked');
+        if (trocoSim && trocoSim.value === "Sim") {
+          const valorTroco = parseFloat(document.getElementById("valorTrocoInput").value);
+          msgTroco = ` | Troco para: R$ ${valorTroco.toFixed(2)}`;
+        }
+      }
+
+      alert(`Pedido #${pedidoId} confirmado! Acompanhe pelo painel.${msgTroco}`);
+      localStorage.removeItem("carrinho");
+      carrinho = {};
+      renderizarCarrinho();
+
+      btnFinalizar.disabled = false;
+      btnFinalizar.textContent = "Finalizar Pedido";
 
     } catch (err) {
-        console.error(err);
-        alert("Erro no servidor.");
-        btnFinalizar.disabled = false;
-        btnFinalizar.textContent = "Finalizar Pedido";
+      console.error(err);
+      alert("Erro no servidor.");
+      btnFinalizar.disabled = false;
+      btnFinalizar.textContent = "Finalizar Pedido";
     }
-});
+  });
 
-
-
-
-
-
-
-function mostrarQRCodeMP(pedidoId, total, qrCode, qrCodeBase64, loja) {
+  function mostrarQRCodeMP(pedidoId, total, qrCode, qrCodeBase64, loja) {
     const modal = document.createElement("div");
     modal.style.cssText = `
         position: fixed; inset: 0; background: rgba(0,0,0,0.8);
@@ -331,23 +353,17 @@ function mostrarQRCodeMP(pedidoId, total, qrCode, qrCodeBase64, loja) {
     document.body.appendChild(modal);
 
     document.getElementById("btnCopiarPix").addEventListener("click", () => {
-        navigator.clipboard.writeText(qrCode);
-        document.getElementById("btnCopiarPix").textContent = "✅ Código copiado!";
+      navigator.clipboard.writeText(qrCode);
+      document.getElementById("btnCopiarPix").textContent = "✅ Código copiado!";
     });
 
     document.getElementById("btnConfirmarPix").addEventListener("click", () => {
-        localStorage.removeItem("carrinho");
-        carrinho = {};
-        renderizarCarrinho();
-        document.body.removeChild(modal);
-        alert(`Pedido #${pedidoId} confirmado! Aguarde a confirmação do pagamento.`);
+      localStorage.removeItem("carrinho");
+      carrinho = {};
+      renderizarCarrinho();
+      document.body.removeChild(modal);
+      alert(`Pedido #${pedidoId} confirmado! Aguarde a confirmação do pagamento.`);
     });
-}
-
-
-
-
-
+  }
 
 }); // fecha DOMContentLoaded
-

@@ -41,6 +41,24 @@ document.getElementById("btnLogin").addEventListener("click", async () => {
         telaPainel.style.display = "block";
         nomeLoja.textContent = usuarioLogado.loja;
 
+
+        // Mostra botão de conectar MP se não conectado
+        if (!dados.usuario.mp_conectado) {
+            const btnConectar = document.createElement("button");
+            btnConectar.textContent = "💳 Conectar Mercado Pago";
+            btnConectar.style.cssText = `
+                background: #009EE3; color: #fff; border: none;
+                padding: 10px 16px; border-radius: 8px;
+                font-size: 14px; cursor: pointer; margin-left: 10px;
+            `;
+            btnConectar.addEventListener("click", async () => {
+                const res = await fetch(`https://pedido-certo-production.up.railway.app/api/usuarios/oauth/url?lojaId=${usuarioLogado.id}`);
+                const dados = await res.json();
+                if (dados.sucesso) window.open(dados.url, "_blank");
+            });
+            document.querySelector(".header-painel").appendChild(btnConectar);
+        }
+
         carregarPedidos();
         intervaloPainel = setInterval(carregarPedidos, 15000);
 
