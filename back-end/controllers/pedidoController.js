@@ -28,7 +28,7 @@ exports.listarPedidosPorLoja = (req, res) => {
         ) AS itens_resumo
         FROM pedidos p
         JOIN itens_pedido i ON i.pedido_id = p.id
-        WHERE p.loja = ?
+        WHERE p.loja = ? AND p.oculto = 0
         GROUP BY p.id
         ORDER BY p.id DESC
     `;
@@ -47,6 +47,20 @@ exports.atualizarStatus = (req, res) => {
     db.query(
         "UPDATE pedidos SET status = ? WHERE id = ?",
         [status, id],
+        (err) => {
+            if (err) return res.status(500).json({ sucesso: false, erro: err.message });
+            res.json({ sucesso: true });
+        }
+    );
+};
+
+// OCULTAR PEDIDO (não exclui do banco, só esconde do painel do lojista)
+exports.ocultarPedido = (req, res) => {
+    const { id } = req.params;
+
+    db.query(
+        "UPDATE pedidos SET oculto = 1 WHERE id = ?",
+        [id],
         (err) => {
             if (err) return res.status(500).json({ sucesso: false, erro: err.message });
             res.json({ sucesso: true });
