@@ -62,17 +62,18 @@ body { background: #f5f5f5; }
 }
 
 .header-info { display: flex; flex-direction: column; }
-.header-info span:first-child { font-size: 18px; font-weight: bold; }
+.header-linha-topo { display: flex; align-items: center; gap: 12px; }
+#nomeLoja { font-size: 18px; font-weight: bold; }
 #contadorNovos { font-size: 12px; color: rgba(255,255,255,0.8); margin-top: 2px; }
 
 #btnSair {
     background: rgba(255,255,255,0.2);
     border: none;
     color: #fff;
-    padding: 8px 16px;
+    padding: 6px 14px;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .filtros {
@@ -193,4 +194,3 @@ body { background: #f5f5f5; }
 .btn-fechar-pedido:hover {
     color: #c40000;
 }
-

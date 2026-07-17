@@ -47,9 +47,9 @@ document.getElementById("btnLogin").addEventListener("click", async () => {
             const btnConectar = document.createElement("button");
             btnConectar.textContent = "💳 Conectar Mercado Pago";
             btnConectar.style.cssText = `
-                background: #009EE3; color: #fff; border: none;
+                background: #ffffff; color: #c40000; border: 2px solid #c40000;
                 padding: 10px 16px; border-radius: 8px;
-                font-size: 14px; cursor: pointer; margin-left: 10px;
+                font-size: 14px; font-weight: bold; cursor: pointer; margin-left: 10px;
             `;
             btnConectar.addEventListener("click", async () => {
                 const res = await fetch(`https://pedido-certo-production.up.railway.app/api/usuarios/oauth/url?lojaId=${usuarioLogado.id}`);
@@ -178,7 +178,14 @@ async function atualizarStatus(id, status) {
     }
 }
 
-function ocultarPedido(id) {
+async function ocultarPedido(id) {
     const card = document.getElementById(`card-${id}`);
     if (card) card.style.display = "none";
+
+    try {
+        await fetch(`${API}/api/pedidos/${id}/ocultar`, { method: "PUT" });
+        pedidosAnteriores = pedidosAnteriores.filter(p => p.id !== id);
+    } catch (err) {
+        console.error("Erro ao ocultar pedido:", err);
+    }
 }
