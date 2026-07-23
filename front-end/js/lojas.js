@@ -326,7 +326,15 @@ const LOJAS = {
 
 const enderecoSalvo = localStorage.getItem("enderecoUsuario");
 const enderecoLoja = document.getElementById("endereco-usuario");
+const tipoEntregaAtual = localStorage.getItem("tipoEntrega") || "entrega";
 
-if (enderecoLoja && enderecoSalvo) {
-  enderecoLoja.textContent = enderecoSalvo;
+if (enderecoLoja) {
+  const blocoEnderecoLoja = enderecoLoja.closest(".endereco-loja") || enderecoLoja;
+
+  if (tipoEntregaAtual === "retirada") {
+    blocoEnderecoLoja.style.display = "none";
+  } else {
+    blocoEnderecoLoja.style.display = "";
+    if (enderecoSalvo) enderecoLoja.textContent = enderecoSalvo;
+  }
 }

@@ -43,8 +43,13 @@ document.getElementById("btnLogin").addEventListener("click", async () => {
 
 
         // Mostra botão de conectar MP se não conectado
+        // Remove qualquer botão antigo primeiro (evita duplicar ao trocar de loja sem recarregar a página)
+        const btnAntigo = document.getElementById("btnConectarMP");
+        if (btnAntigo) btnAntigo.remove();
+
         if (!dados.usuario.mp_conectado) {
             const btnConectar = document.createElement("button");
+            btnConectar.id = "btnConectarMP";
             btnConectar.textContent = "💳 Conectar Mercado Pago";
             btnConectar.style.cssText = `
                 background: #ffffff; color: #c40000; border: 2px solid #c40000;
@@ -73,6 +78,9 @@ document.getElementById("btnSair").addEventListener("click", () => {
     pedidosAnteriores = [];
     telaLogin.style.display = "flex";
     telaPainel.style.display = "none";
+
+    const btnAntigo = document.getElementById("btnConectarMP");
+    if (btnAntigo) btnAntigo.remove();
 });
 
 document.querySelectorAll(".filtro").forEach(btn => {

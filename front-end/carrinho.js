@@ -8,8 +8,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let carrinho = JSON.parse(localStorage.getItem("carrinho")) || {};
 
-  // 📍 ENDEREÇO
-  const endereco = localStorage.getItem("enderecoUsuario") || "Não informado";
+  // 📍 ENDEREÇO (respeita a escolha de Entrega/Retirada feita na tela inicial)
+  const labelEnderecoEl = document.getElementById("labelEnderecoCarrinho");
+  const tipoEntrega = localStorage.getItem("tipoEntrega") || "entrega";
+
+  let endereco;
+  if (tipoEntrega === "retirada") {
+    labelEnderecoEl.textContent = "";
+    endereco = "Retirar na Loja";
+  } else {
+    labelEnderecoEl.textContent = "📍 Entregar em:";
+    endereco = localStorage.getItem("enderecoUsuario") || "Não informado";
+  }
   enderecoEl.textContent = endereco;
 
   // 👤 NOME

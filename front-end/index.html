@@ -18,24 +18,33 @@
   <section class="endereco-wrapper">
     <div class="endereco-card">
 
-      <div class="endereco-texto">
-        <span class="titulo">Entregar em</span>
-        <span class="endereco" id="textoEndereco">Informe seu endereço</span>
+      <div class="toggle-entrega">
+        <button class="toggle-btn ativo" id="btnEntrega">Entrega</button>
+        <button class="toggle-btn" id="btnRetirada">Retirar na loja</button>
       </div>
 
-      <button class="btn-endereco" id="btnEndereco">
-        Adicionar endereço <span class="seta">➜</span>
-      </button>
+      <div id="blocoEntrega">
+        <div class="endereco-texto">
+          <span class="titulo">Entregar em</span>
+          <span class="endereco" id="textoEndereco">Informe seu endereço</span>
+        </div>
 
-      <div id="camposEndereco" style="display:none;">
-        <input type="text" id="inputRua" class="input-endereco" placeholder="Nome da rua">
-        <input type="text" id="inputNumero" class="input-endereco" placeholder="Número da casa">
-        <input type="text" id="inputComplemento" class="input-endereco" placeholder="Complemento (apto, bloco...)">
-        <input type="text" id="inputReferencia" class="input-endereco" placeholder="Ponto de referência">
-        <button class="btn-salvar" id="btnSalvarEndereco">Salvar endereço</button>
+        <button class="btn-endereco" id="btnEndereco">
+          Adicionar endereço <span class="seta">➜</span>
+        </button>
+
+        <div id="camposEndereco" style="display:none;">
+          <input type="text" id="inputRua" class="input-endereco" placeholder="Nome da rua">
+          <input type="text" id="inputNumero" class="input-endereco" placeholder="Número da casa">
+          <input type="text" id="inputComplemento" class="input-endereco" placeholder="Complemento (apto, bloco...)">
+          <input type="text" id="inputReferencia" class="input-endereco" placeholder="Ponto de referência">
+          <button class="btn-salvar" id="btnSalvarEndereco">Salvar endereço</button>
+        </div>
       </div>
 
-<!-- Criaro o botão de retirada do local, CSS simples e coloca para salvar no banco de dados e a mensagem seja guardada no pedido e no painel do do lojista-->
+      <div id="blocoRetirada" style="display:none;">
+        <p class="aviso-retirada">Você vai retirar o pedido direto na loja escolhida. Não precisa informar endereço.</p>
+      </div>
 
     </div>
   </section>

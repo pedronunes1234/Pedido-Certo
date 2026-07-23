@@ -6,6 +6,36 @@ document.addEventListener("DOMContentLoaded", () => {
   const textoEndereco = document.getElementById("textoEndereco");
   const btnEndereco = document.getElementById("btnEndereco");
 
+  // 🔹 TOGGLE ENTREGA / RETIRADA (FUNCIONA NA PÁGINA INICIAL)
+  const btnEntrega = document.getElementById("btnEntrega");
+  const btnRetirada = document.getElementById("btnRetirada");
+  const blocoEntrega = document.getElementById("blocoEntrega");
+  const blocoRetirada = document.getElementById("blocoRetirada");
+
+  if (btnEntrega && btnRetirada) {
+    function aplicarTipoEntrega(tipo) {
+      localStorage.setItem("tipoEntrega", tipo);
+
+      if (tipo === "retirada") {
+        btnRetirada.classList.add("ativo");
+        btnEntrega.classList.remove("ativo");
+        blocoRetirada.style.display = "block";
+        blocoEntrega.style.display = "none";
+      } else {
+        btnEntrega.classList.add("ativo");
+        btnRetirada.classList.remove("ativo");
+        blocoEntrega.style.display = "block";
+        blocoRetirada.style.display = "none";
+      }
+    }
+
+    btnEntrega.addEventListener("click", () => aplicarTipoEntrega("entrega"));
+    btnRetirada.addEventListener("click", () => aplicarTipoEntrega("retirada"));
+
+    const tipoSalvo = localStorage.getItem("tipoEntrega") || "entrega";
+    aplicarTipoEntrega(tipoSalvo);
+  }
+
   if (textoEndereco) {
     const enderecoSalvo = localStorage.getItem("enderecoUsuario");
     if (enderecoSalvo) {
@@ -58,6 +88,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const loja = LOJAS[lojaId];
   if (!loja) return;
+
+  // 🔹 Limpa o carrinho automaticamente se o cliente trocou de loja
+  // (ex: adicionou hambúrguer na Burger House, depois entrou na Peixodá Pizzaria)
+  const lojaCarrinhoSalva = localStorage.getItem("lojaCarrinhoAtual");
+  if (lojaCarrinhoSalva && lojaCarrinhoSalva !== lojaId) {
+    localStorage.removeItem("carrinho");
+  }
+  localStorage.setItem("lojaCarrinhoAtual", lojaId);
 
   document.querySelector(".nome-loja").textContent = loja.nome;
 
