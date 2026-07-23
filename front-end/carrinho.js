@@ -235,7 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
           body: JSON.stringify({
             total: totalPedido,
             nomeCliente: nome,
-            email: "",
+            email:"",
             dadosPedido: {
               loja,
               nome_cliente: nome,
